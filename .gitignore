@@ -9,3 +9,15 @@ yarn-error.log*
 .pnp.js
 
 .vscode/*
+
+.DS_Store
+.idea
+dist
+# Playwright
+node_modules/
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/tests/demo-todo-app.spec.ts
+.env
