@@ -1,14 +1,39 @@
 {
   "name": "playwright-github-automation",
   "version": "1.0.0",
-  "description": "",
+  "description": "Test Automation using Playwright",
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "lint": "eslint . --ext .ts",
+    "lint:fix": "eslint . --ext .ts --fix",
+    "format": "prettier --write .",
+    "check:format": "prettier --check .",
+    "test": "npx playwright test",
+    "test:headed": "npx playwright test --headed",
+    "test:firefox": "npx playwright test --browser=firefox",
+    "test:chromium": "npx playwright test --project chromium",
+    "test:webkit": "npx playwright test --browser=webkit",
+    "test:debug": "npx playwright test --debug",
+    "test:tag": "npx playwright test --grep \"@smoke\" --headed",
+    "test:report": "npx playwright test && npx playwright show-report",
+    "test:ui": "npx playwright test --ui",
+    "test:update-snapshots": "npx playwright test --update-snapshots",
+    "test:codegen": "npx playwright codegen"
   },
-  "dependencies": {},
   "devDependencies": {
+    "@playwright/test": "^1.51.0",
+    "@types/node": "^22.13.10",
+    "@typescript-eslint/eslint-plugin": "^8.26.1",
+    "@typescript-eslint/parser": "^8.26.1",
+    "eslint": "^9.22.0",
+    "eslint-config-prettier": "^10.1.1",
+    "eslint-plugin-prettier": "^5.2.3",
+    "prettier": "^3.5.3",
     "typescript": "^5.5.3"
   },
-  "private": true
+  "private": true,
+  "dependencies": {
+    "dotenv": "^16.4.7"
+  }
 }
