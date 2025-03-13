@@ -10,8 +10,8 @@
     "format": "prettier --write .",
     "check:format": "prettier --check .",
     "test": "npx playwright test",
-    "test:headed": "npx playwright test --headed",
-    "test:firefox": "npx playwright test --browser=firefox",
+    "test:headed": "npx playwright test --project chromium --headed",
+    "test:firefox": "npx playwright test --project ui --browser=firefox",
     "test:chromium": "npx playwright test --project chromium",
     "test:webkit": "npx playwright test --browser=webkit",
     "test:debug": "npx playwright test --debug",
@@ -19,7 +19,8 @@
     "test:report": "npx playwright test && npx playwright show-report",
     "test:ui": "npx playwright test --ui",
     "test:update-snapshots": "npx playwright test --update-snapshots",
-    "test:codegen": "npx playwright codegen"
+    "test:codegen": "npx playwright codegen",
+    "test:api": "playwright test --project api"
   },
   "devDependencies": {
     "@playwright/test": "^1.51.0",
