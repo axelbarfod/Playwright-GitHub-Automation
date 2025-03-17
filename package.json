@@ -18,10 +18,10 @@
     "test:chromium": "npx playwright test --project chromium",
     "test:webkit": "npx playwright test --browser=webkit",
     "test:debug": "npx playwright test --debug",
-    "test:tag": "npx playwright test --grep \"@smoke\" --headed",
+    "test:tag": "npx playwright test --grep \"@debug\" --headed",
     "test:report": "npx playwright test && npx playwright show-report",
     "test:ui": "npx playwright test --ui",
-    "test:update-snapshots": "npx playwright test --update-snapshots",
+    "test:update-snapshots": "npx playwright test --project chromium --update-snapshots",
     "test:codegen": "npx playwright codegen",
     "test:api": "playwright test --project api"
   },
@@ -30,6 +30,8 @@
     "@types/node": "^22.13.10",
     "@typescript-eslint/eslint-plugin": "^8.26.1",
     "@typescript-eslint/parser": "^8.26.1",
+    "ajv": "^8.17.1",
+    "ajv-formats": "^3.0.1",
     "eslint": "^9.22.0",
     "eslint-config-prettier": "^10.1.1",
     "eslint-plugin-prettier": "^5.2.3",
@@ -38,6 +40,7 @@
   },
   "private": true,
   "dependencies": {
-    "dotenv": "^16.4.7"
+    "dotenv": "^16.4.7",
+    "winston": "^3.17.0"
   }
 }

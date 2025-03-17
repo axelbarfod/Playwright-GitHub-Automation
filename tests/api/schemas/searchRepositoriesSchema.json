@@ -1,0 +1,20 @@
+{
+  "type": "object",
+  "required": [
+    "total_count",
+    "incomplete_results",
+    "items"
+  ],
+  "properties": {
+    "total_count": {
+      "type": "integer"
+    },
+    "incomplete_results": {
+      "type": "boolean"
+    },
+    "items": {
+      "type": "array"
+    }
+  },
+  "additionalProperties": true
+}
