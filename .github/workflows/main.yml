@@ -16,8 +16,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
-          cache: 'npm' # Speed up by caching npm dependencies
+          node-version: "18"
+          cache: "npm" # Speed up by caching npm dependencies
 
       - name: Install dependencies
         run: npm ci
@@ -28,13 +28,13 @@ jobs:
       - name: Run linting
         run: npm run lint
 
-      #- name: Check formatting
-      #  run: npm run check:format
+      - name: Check formatting
+        run: npm run check:format
 
-      - name: Run UI tests
-        run: npm run test:ui
+      - name: Run Chrome E2E tests
+        run: npm run test:chromium
         env:
-          CI: true # Optimize Playwright for CI
+          CI: true
 
       - name: Run API tests
         run: npm run test:api

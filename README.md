@@ -10,19 +10,19 @@ A TypeScript-based automation project using Playwright to interact with GitHub�
 web automation by searching for repositories, navigating to results, and verifying content—all while showcasing modern
 development practices like type safety, linting, and continuous integration.
 
-* **Repository** Search: Automates searching for GitHub repositories by keyword (e.g., "playwright").
-* **Navigation**: Clicks through to the first repository result and verifies key details (e.g., name, description).
-* **Type Safety**: Written in TypeScript with strict typing to ensure robust code.
-* **Code Quality**: Enforced with ESLint and Prettier for consistent, error-free code.
-* **CI/CD**: Integrated with GitHub Actions to lint and format code on every push.
+- **Repository** Search: Automates searching for GitHub repositories by keyword (e.g., "playwright").
+- **Navigation**: Clicks through to the first repository result and verifies key details (e.g., name, description).
+- **Type Safety**: Written in TypeScript with strict typing to ensure robust code.
+- **Code Quality**: Enforced with ESLint and Prettier for consistent, error-free code.
+- **CI/CD**: Integrated with GitHub Actions to lint and format code on every push.
 
 ## Prerequisites
 
 Before running the project, ensure you have:
 
-* [Node.js](https://nodejs.org/en) (v18 or later recommended)
-* [npm](https://www.npmjs.com/) (comes with Node.js)
-* A modern browser (Playwright installs its own, but ensure compatibility if using system browsers)
+- [Node.js](https://nodejs.org/en) (v18 or later recommended)
+- [npm](https://www.npmjs.com/) (comes with Node.js)
+- A modern browser (Playwright installs its own, but ensure compatibility if using system browsers)
 
 ## Installation
 
@@ -55,31 +55,31 @@ Check in the [package.json](package.json) for the rest of the npm commands avail
 
 ### Lint the Code:
 
-`npm run lint`   # Checks for linting errors
-`npm run lint:fix`  # Fixes linting errors automatically
+`npm run lint` # Checks for linting errors
+`npm run lint:fix` # Fixes linting errors automatically
 
 ### Format the Code:
 
-`npm run format`  # Formats with Prettier
+`npm run format` # Formats with Prettier
 `npm run check:format ` # Checks formatting compliance
 
 ## Tools
 
-* Playwright: Browser automation framework.
-* TypeScript: Static typing for safer code.
-* ESLint: Linting with flat config (v9.x) and TypeScript support.
-* Prettier: Code formatting for consistency.
-* GitHub Actions: CI pipeline for quality checks. (wip)
+- Playwright: Browser automation framework.
+- TypeScript: Static typing for safer code.
+- ESLint: Linting with flat config (v9.x) and TypeScript support.
+- Prettier: Code formatting for consistency.
+- GitHub Actions: CI pipeline for quality checks. (wip)
 
 ### API Testing
 
 This project includes API tests for GitHub’s REST API, verifying endpoints like:
+
 - `GET /search/repositories`: Ensures repository search works as expected.
 
 Run API tests with:
 
 npm run test
-
 
 ## Contributing
 
@@ -99,6 +99,5 @@ This project is licensed under the MIT License (LICENSE). Feel free to use, modi
 
 ## Acknowledgments
 
-* Built with Playwright by Microsoft.
-* Inspired by the need to showcase automation skills for job applications.
-
+- Built with Playwright by Microsoft.
+- Inspired by the need to showcase automation skills for job applications.
