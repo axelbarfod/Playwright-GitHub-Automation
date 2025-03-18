@@ -1,10 +1,6 @@
 {
   "type": "object",
-  "required": [
-    "total_count",
-    "incomplete_results",
-    "items"
-  ],
+  "required": ["total_count", "incomplete_results", "items"],
   "properties": {
     "total_count": {
       "type": "integer"

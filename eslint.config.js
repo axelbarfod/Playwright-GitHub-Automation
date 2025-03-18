@@ -5,7 +5,7 @@ const prettierConfig = require("eslint-config-prettier");
 
 module.exports = [
   {
-    ignores: ['tests/utils/**'],
+    ignores: ["tests/utils/**"],
   },
   {
     files: ["**/*.ts"],
@@ -29,7 +29,7 @@ module.exports = [
       ...prettierConfig.rules,
       "prettier/prettier": "off",
       semi: ["error", "always"],
-      quotes: 'off',
+      quotes: "off",
       "@typescript-eslint/no-unused-vars": [
         "error",
         { argsIgnorePattern: "^_" },

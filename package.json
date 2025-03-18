@@ -12,6 +12,7 @@
     "lint:fix": "eslint . --ext .ts --fix",
     "format": "prettier --write .",
     "check:format": "prettier --check .",
+    "check:write": "prettier --write .",
     "test": "npx playwright test",
     "test:headed": "npx playwright test --project chromium --headed",
     "test:firefox": "npx playwright test --project ui --browser=firefox",
