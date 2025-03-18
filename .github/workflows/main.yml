@@ -34,7 +34,7 @@ jobs:
       - name: Run UI tests
         run: npm run test:ui
         env:
-          CI: true 
+          CI: true
 
       - name: Run API tests
         run: npm run test:api
