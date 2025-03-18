@@ -31,8 +31,8 @@ jobs:
       - name: Check formatting
         run: npm run check:format
 
-      - name: Run UI tests
-        run: npm run test:ui
+      - name: Run Chrome E2E tests
+        run: npm run test:chromium
         env:
           CI: true
 
