@@ -21,4 +21,5 @@ node_modules/
 /playwright/.cache/
 /tests/demo-todo-app.spec.ts
 .env
-/logs/automation.json
+/logs/automation.txt
+.auth

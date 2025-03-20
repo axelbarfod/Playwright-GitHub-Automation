@@ -31,18 +31,31 @@ jobs:
       - name: Check formatting
         run: npm run check:format
 
-      - name: Run Chrome E2E tests
+      - name: Run Github E2E tests with Auth
         run: npm run test:chromium
         env:
           CI: true
+          GH_USER: ${{ secrets.GH_USER }}
+          GH_PASSWORD: ${{ secrets.GH_PASSWORD }}
+          GH_URL_UI: ${{ secrets.GH_BASE_URL_UI }}
+
+      - name: Run Github E2E tests with no Auth
+        run: npm run test:chromium
+        env:
+          CI: true
+          GH_USER: ${{ secrets.GH_USER }}
+          GH_PASSWORD: ${{ secrets.GH_PASSWORD }}
+          GH_URL_UI: ${{ secrets.GH_BASE_URL_UI }}
 
       - name: Run API tests
         run: npm run test:api
         env:
           CI: true
+          GH_USER: ${{ secrets.GH_USER }}
+          GH_PASSWORD: ${{ secrets.GH_PASSWORD }}
 
       - name: Upload test artifacts
-        if: failure() # Only on failure
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: test-reports
