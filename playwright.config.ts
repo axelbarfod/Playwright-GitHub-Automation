@@ -72,6 +72,7 @@ export default defineConfig({
         ...devices["Desktop Chrome"],
         baseURL: "https://www.github.com",
         storageState: ".auth/credentials.json",
+        trace: "on",
       },
       testMatch: "tests/ui/auth/**/*.spec.ts",
     },
