@@ -54,6 +54,18 @@ jobs:
           GH_USER: ${{ secrets.GH_USER }}
           GH_PASSWORD: ${{ secrets.GH_PASSWORD }}
 
+      - name: Verify Storage State File
+        if: always()
+        run: |
+          echo "Checking for storage state file..."
+          if [ -f .auth/credentials.json ]; then
+            echo "Storage file exists at: $(pwd)/.auth/credentials.json"
+            echo "File size: $(wc -c .auth/credentials.json)"
+            echo "File contents preview (first 100 chars): $(head -c 100 .auth/credentials.json)"
+          else
+            echo "Storage file .auth/credentials.json not found"
+          fi
+
       - name: Upload test artifacts
         if: always()
         uses: actions/upload-artifact@v4
@@ -61,4 +73,5 @@ jobs:
           name: test-reports
           path: |
             playwright-report/
-            logs/app.log
+            logs/app.log/
+            .auth/
