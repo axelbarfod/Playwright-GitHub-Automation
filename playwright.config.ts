@@ -53,10 +53,10 @@ export default defineConfig({
   globalSetup: "./tests/ui/setup/github.login.global-setup.ts",
   /* Configure projects for major browsers */
   projects: [
-    {
-      name: "setup",
-      testMatch: /.*setup.*\.ts/,
-    },
+    // {
+    //   name: "setup",
+    //   testMatch: /.*setup.*\.ts/,
+    // },
     {
       name: "chromium-no-auth",
       use: {

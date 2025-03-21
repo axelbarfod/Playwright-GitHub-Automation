@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 import { GithubLoginPage } from "../../../pages/githubLoginPage";
 
 test.describe("Login and validate", () => {
-  test("Login Successfully", { tag: "@debug" }, async ({ page }) => {
+  test("Login Successfully", async ({ page }) => {
     const ghLogin = new GithubLoginPage(page);
     await ghLogin.gotoLogin();
     await expect(

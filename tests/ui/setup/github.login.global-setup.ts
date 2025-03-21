@@ -15,10 +15,11 @@ export default async function globalSetup() {
   }
 
   const baseUrl = process.env.GH_BASE_URL_UI!;
+  const user = process.env.GH_USER!;
+  const password = process.env.GH_PASSWORD!;
 
-  if (!baseUrl) {
-    console.log("No base URL set ", baseUrl);
-    throw new Error("Base URL is not set as an environment variable");
+  if (!baseUrl || !user || !password) {
+    throw new Error("Missing environments variable");
   }
 
   const page = await browser
@@ -28,9 +29,11 @@ export default async function globalSetup() {
   const ghLogin = new GithubLoginPage(page);
 
   await ghLogin.gotoLogin();
-  await ghLogin.login(process.env.GH_USER!, process.env.GH_PASSWORD!);
+  await ghLogin.login(user, password);
 
   await page.context().storageState({ path: userFile });
 
   await browser.close();
+
+  console.log("Global setup completed successfully");
 }
