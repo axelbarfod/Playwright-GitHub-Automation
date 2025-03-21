@@ -45,7 +45,7 @@ jobs:
           CI: true
           GH_USER: ${{ secrets.GH_USER }}
           GH_PASSWORD: ${{ secrets.GH_PASSWORD }}
-          GH_URL_UI: ${{ secrets.GH_BASE_URL_UI }}
+          GH_BASE_URL_UI: ${{ secrets.GH_BASE_URL_UI }}
 
       - name: Run API tests
         run: npm run test:api
