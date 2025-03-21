@@ -17,6 +17,7 @@ export default async function globalSetup() {
   const baseUrl = process.env.GH_BASE_URL_UI!;
 
   if (!baseUrl) {
+    console.log("No base URL set ", baseUrl);
     throw new Error("Base URL is not set as an environment variable");
   }
 
