@@ -73,6 +73,9 @@ export default defineConfig({
         baseURL: "https://www.github.com",
         storageState: ".auth/credentials.json",
         trace: "on",
+        launchOptions: {
+          args: ["--start-maximized"],
+        },
       },
       testMatch: "tests/ui/auth/**/*.spec.ts",
     },

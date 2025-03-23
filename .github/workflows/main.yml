@@ -73,5 +73,6 @@ jobs:
           name: test-reports
           path: |
             playwright-report/
-            logs/app.log/
+            logs/automation.txt
             .auth/
+            .trace/
