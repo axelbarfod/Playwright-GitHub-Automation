@@ -71,7 +71,7 @@ export default defineConfig({
       use: {
         ...devices["Desktop Chrome"],
         baseURL: "https://www.github.com",
-        storageState: ".auth/credentials.json",
+        storageState: "auth/credentials.json",
         trace: "on",
         launchOptions: {
           args: ["--start-maximized"],

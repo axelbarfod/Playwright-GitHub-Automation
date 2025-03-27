@@ -58,12 +58,12 @@ jobs:
         if: always()
         run: |
           echo "Checking for storage state file..."
-          if [ -f .auth/credentials.json ]; then
-            echo "Storage file exists at: $(pwd)/.auth/credentials.json"
-            echo "File size: $(wc -c .auth/credentials.json)"
-            echo "File contents preview (first 100 chars): $(head -c 100 .auth/credentials.json)"
+          if [ -f auth/credentials.json ]; then
+            echo "Storage file exists at: $(pwd)/auth/credentials.json"
+            echo "File size: $(wc -c auth/credentials.json)"
+            echo "File contents preview (first 100 chars): $(head -c 100 auth/credentials.json)"
           else
-            echo "Storage file .auth/credentials.json not found"
+            echo "Storage file auth/credentials.json not found"
           fi
 
       - name: Upload test artifacts
@@ -74,19 +74,19 @@ jobs:
           path: |
             playwright-report/
             logs/automation.txt
-            .auth/
-            .trace/
+            auth/
+            trace/
 
-      - name: Upload .trace artifact
+      - name: Upload trace artifact
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: trace-files
-          path: .trace/
+          path: trace/
 
-      - name: Upload .auth artifact
+      - name: Upload auth artifact
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: auth-files
-          path: .auth/
+          path: auth/

@@ -5,7 +5,7 @@ import { GithubLoginPage } from "../../../pages/githubLoginPage";
 export default async function globalSetup() {
   const browserName = process.env.BROWSER || "chromium";
 
-  const userFile = ".auth/credentials.json";
+  const userFile = "auth/credentials.json";
   let browser;
 
   if (browserName === "firefox") {
@@ -36,7 +36,7 @@ export default async function globalSetup() {
   await page.context().storageState({ path: userFile });
 
   // Stop tracing
-  await context.tracing.stop({ path: ".trace/global-setup-trace.zip" });
+  await context.tracing.stop({ path: "trace/global-setup-trace.zip" });
   await browser.close();
 
   console.log("Global setup completed successfully");

@@ -22,5 +22,5 @@ node_modules/
 /tests/demo-todo-app.spec.ts
 .env
 /logs/automation.txt
-.auth
-.trace
+auth/credentials.json
+trace/global-setup-trace.zip
