@@ -35,6 +35,13 @@ export default async function globalSetup() {
 
   await page.context().storageState({ path: userFile });
 
+  //delete after
+  const isLoggedIn = page.getByRole("link", { name: "Dashboard" }).isVisible();
+  if (!isLoggedIn) {
+    throw new Error("Login failed: Dashboard link not found");
+  }
+  //end delete
+
   // Stop tracing
   await context.tracing.stop({ path: "trace/global-setup-trace.zip" });
   await browser.close();
