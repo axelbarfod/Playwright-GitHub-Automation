@@ -22,6 +22,11 @@ export class GithubLoginPage {
     await this.waitForPageToLoad();
   }
 
+  async gotoHome() {
+    await this.page.goto("/");
+    await this.waitForPageToLoad();
+  }
+
   /**
    * Log's in with specific credentials
    * @param user - username.
