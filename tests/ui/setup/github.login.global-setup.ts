@@ -28,21 +28,10 @@ export default async function globalSetup() {
   await context.tracing.start({ screenshots: true, snapshots: true });
 
   const page = await context.newPage();
-  const storageState = await context.storageState(); //doing this for debugging
-  console.log(
-    "Initial State of Storage",
-    JSON.stringify(storageState, null, 2),
-  );
   const ghLogin = new GithubLoginPage(page);
 
   await ghLogin.gotoLogin();
   await ghLogin.login(user, password);
-
-  const postLoginStorageState = await context.storageState();
-  console.log(
-    "Post-Login Storage State:",
-    JSON.stringify(postLoginStorageState, null, 2),
-  );
 
   await page.context().storageState({ path: userFile });
 
