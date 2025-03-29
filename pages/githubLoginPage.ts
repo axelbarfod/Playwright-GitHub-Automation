@@ -42,4 +42,25 @@ export class GithubLoginPage {
   private async waitForPageToLoad() {
     await this.page.waitForLoadState("domcontentloaded");
   }
+
+  async loginViaApi(token: string) {
+    console.log("Verifying GH_TOKEN via API...");
+    const apiResponse = await this.page.request.get(
+      "https://api.github.com/user",
+      {
+        headers: {
+          Authorization: `token ${token}`,
+          Accept: "application/vnd.github+json",
+        },
+      },
+    );
+
+    if (!apiResponse.ok) {
+      throw new Error(
+        "Error trying to login via api! " + (await apiResponse.text()),
+      );
+    }
+
+    return apiResponse.json();
+  }
 }
