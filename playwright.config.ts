@@ -13,8 +13,12 @@ dotenv.config({ path: path.resolve(__dirname, ".env") });
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig({
-  timeout: 100_000,
-  globalTimeout: 100000,
+  captureGitInfo: {
+    commit: true,
+    diff: true,
+  },
+  timeout: 30_000,
+  globalTimeout: 60_000,
   testDir: "./tests",
   /* Run tests in files in parallel */
   fullyParallel: true,
@@ -23,15 +27,11 @@ export default defineConfig({
   /* Retry on CI only */
   retries: process.env.CI ? 2 : 0,
   /* Opt out of parallel tests on CI. */
-  workers: process.env.CI ? 1 : undefined,
+  workers: process.env.CI ? 5 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: [["html"], ["list"]],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
-    /* Base URL to use in actions like `await page.goto('/')`. */
-    // baseURL: 'http://127.0.0.1:3000',
-
-    /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: "on",
     baseURL: "https://www.github.com",
     actionTimeout: 0,
@@ -39,7 +39,6 @@ export default defineConfig({
     video: "retain-on-failure",
     screenshot: {
       mode: "only-on-failure",
-      //fullPage: true,
     },
     headless: true,
   },
@@ -51,15 +50,34 @@ export default defineConfig({
       maxDiffPixelRatio: 0.01,
     },
   },
+  globalSetup: "./tests/ui/setup/github.login.global-setup.ts",
   /* Configure projects for major browsers */
   projects: [
+    // {
+    //   name: "setup",
+    //   testMatch: /.*setup.*\.ts/,
+    // },
+    {
+      name: "chromium-no-auth",
+      use: {
+        ...devices["Desktop Chrome"],
+        baseURL: "https://www.github.com",
+        storageState: undefined,
+      },
+      testMatch: "tests/ui/no-auth/**/*.spec.ts",
+    },
     {
       name: "chromium",
       use: {
         ...devices["Desktop Chrome"],
         baseURL: "https://www.github.com",
+        storageState: "auth/credentials.json",
+        trace: "on",
+        launchOptions: {
+          args: ["--start-maximized"],
+        },
       },
-      testMatch: "tests/ui/**/*.spec.ts",
+      testMatch: "tests/ui/auth/**/*.spec.ts",
     },
     {
       name: "api",

@@ -17,7 +17,7 @@ export class GithubHomePage extends BasePage {
 
   async goToHomePage() {
     await this.page.goto("/");
-    await this.page.waitForLoadState("networkidle");
+    await this.page.waitForLoadState("domcontentloaded");
   }
 
   /**

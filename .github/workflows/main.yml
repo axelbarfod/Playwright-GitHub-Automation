@@ -31,21 +31,48 @@ jobs:
       - name: Check formatting
         run: npm run check:format
 
-      - name: Run Chrome E2E tests
+      - name: Run Github E2E tests with Auth
         run: npm run test:chromium
         env:
           CI: true
+          GH_USER: ${{ secrets.GH_USER }}
+          GH_PASSWORD: ${{ secrets.GH_PASSWORD }}
+          GH_BASE_URL_UI: ${{ secrets.GH_BASE_URL_UI }}
+
+      - name: Run Github E2E tests with no Auth
+        run: npm run test:chromium-no-auth
+        env:
+          CI: true
+          GH_USER: ${{ secrets.GH_USER }}
+          GH_PASSWORD: ${{ secrets.GH_PASSWORD }}
+          GH_BASE_URL_UI: ${{ secrets.GH_BASE_URL_UI }}
 
       - name: Run API tests
         run: npm run test:api
         env:
           CI: true
+          GH_USER: ${{ secrets.GH_USER }}
+          GH_PASSWORD: ${{ secrets.GH_PASSWORD }}
+
+      - name: Verify Storage State File
+        if: always()
+        run: |
+          echo "Checking for storage state file..."
+          if [ -f auth/credentials.json ]; then
+            echo "Storage file exists at: $(pwd)/auth/credentials.json"
+            echo "File size: $(wc -c auth/credentials.json)"
+            echo "File contents preview (first 100 chars): $(head -c 100 auth/credentials.json)"
+          else
+            echo "Storage file auth/credentials.json not found"
+          fi
 
       - name: Upload test artifacts
-        if: failure() # Only on failure
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: test-reports
           path: |
             playwright-report/
-            logs/app.log
+            logs/automation.txt
+            auth/
+            trace/

@@ -16,15 +16,17 @@
     "test": "npx playwright test",
     "test:headed": "npx playwright test --project chromium --headed",
     "test:firefox": "npx playwright test --project ui --browser=firefox",
-    "test:chromium": "npx playwright test --project chromium",
+    "test:chromium": "PROJECT_NAME=chromium npx playwright test --project chromium",
+    "test:chromium-no-auth": "PROJECT_NAME=chromium-no-auth npx playwright test --project chromium-no-auth",
     "test:webkit": "npx playwright test --browser=webkit",
-    "test:debug": "npx playwright test --debug",
-    "test:tag": "npx playwright test --grep \"@debug\" --headed",
-    "test:report": "npx playwright test && npx playwright show-report",
+    "test:debug": "npx playwright test --debug --grep \"@debug\"",
+    "test:tag": "npx playwright test --grep \"@debug\" --headed --trace on npx playwright show-report",
+    "test:report": "npx playwright show-report",
     "test:ui": "npx playwright test --ui",
     "test:update-snapshots": "npx playwright test --project chromium --update-snapshots",
+    "test:update-snapshots-no-auth": "npx playwright test --project chromium-no-auth --update-snapshots",
     "test:codegen": "npx playwright codegen",
-    "test:api": "playwright test --project api"
+    "test:api": "PROJECT_NAME=api playwright test --project api"
   },
   "devDependencies": {
     "@playwright/test": "^1.51.0",
