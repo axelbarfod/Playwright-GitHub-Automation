@@ -1,8 +1,15 @@
 import { chromium, firefox } from "@playwright/test";
 import { GithubLoginPage } from "../../../pages/githubLoginPage";
+import logger from "../../utils/logger";
 
 //we can add the config: FullConfig to get access the playwright configuration, but you have no access to the use.
 export default async function globalSetup() {
+  const projectName = process.env.PROJECT_NAME!;
+  if (projectName === "api") {
+    logger.info(`Skipping global setup for project: ${projectName}`);
+    return;
+  }
+
   const browserName = process.env.BROWSER || "chromium";
 
   const userFile = "auth/credentials.json";
