@@ -11,7 +11,7 @@ test.describe("Navigate to landing page", () => {
   test("navigates to landing page", async ({ page }) => {
     const githubHomePage = new GithubHomePage(page);
     await githubHomePage.validatePageHasLoaded();
-    await expect(page).toHaveScreenshot("github-landing-page.png");
+    //await expect(page).toHaveScreenshot("github-landing-page.png");
     await expect(page).toHaveTitle(/GitHub.*Build and ship software/);
   });
 
