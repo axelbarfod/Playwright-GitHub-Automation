@@ -9,8 +9,17 @@ const logger = createLogger({
     }),
   ),
   transports: [
-    new transports.Console(),
-    new transports.File({ filename: "logs/automation.txt" }),
+    new transports.Console({
+      format: format.printf(({ timestamp, level, message }) => {
+        return `${timestamp} [${level.toUpperCase()}]: ${message}`;
+      }),
+    }),
+    new transports.File({
+      filename: "logs/automation.txt",
+      format: format.printf(({ timestamp, level, message }) => {
+        return `${timestamp} [${level.toUpperCase()}]: ${message}`;
+      }),
+    }),
   ],
 });
 
