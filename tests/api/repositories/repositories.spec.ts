@@ -27,8 +27,9 @@ test.describe(" Github Search API tests", () => {
     );
     const fullName = `${ghUser}/${project}`;
     logger.info(fullName);
-    expect(apiResponse.status()).toBe(200);
     const data = await apiResponse.json();
+    expect(apiResponse.status()).toBe(200);
+    logger.info(JSON.stringify(data, null, 2));
     const headers: { [p: string]: string } = apiResponse.headers();
     expect(data).toHaveProperty("name", `${project}`);
     expect(data.owner.login).toBe(`${ghUser}`);

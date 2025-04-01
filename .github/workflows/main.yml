@@ -53,6 +53,7 @@ jobs:
           CI: true
           GH_USER: ${{ secrets.GH_USER }}
           GH_PASSWORD: ${{ secrets.GH_PASSWORD }}
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
       - name: Verify Storage State File
         if: always()
