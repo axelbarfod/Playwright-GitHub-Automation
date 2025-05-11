@@ -1,13 +1,21 @@
-name: CI
+name: Playwright CI/CD Pipeline
 
 on:
   push:
     branches: [main]
   pull_request:
     branches: [main]
+  workflow_dispatch:
+    inputs:
+      debug:
+        description: "Run workflow with debug logging"
+        required: false
+        default: false
+        type: boolean
 
 jobs:
-  test:
+  validate:
+    name: Code Quality
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -17,13 +25,10 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "18"
-          cache: "npm" # Speed up by caching npm dependencies
+          cache: "npm"
 
       - name: Install dependencies
         run: npm ci
-
-      - name: Install Playwright browsers
-        run: npx playwright install --with-deps
 
       - name: Run linting
         run: npm run lint
@@ -31,32 +36,50 @@ jobs:
       - name: Check formatting
         run: npm run check:format
 
-      - name: Run Github E2E tests with Auth
-        run: npm run test:chromium
+  test:
+    name: Run Tests
+    needs: validate
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        test-group: [auth, no-auth, api]
+        include:
+          - test-group: auth
+            command: npm run test:chromium
+          - test-group: no-auth
+            command: npm run test:chromium-no-auth
+          - test-group: api
+            command: npm run test:api
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+
+      - name: Run ${{ matrix.test-group }} tests
+        run: ${{ matrix.command }}
         env:
           CI: true
+          DEBUG: ${{ github.event.inputs.debug == 'true' && 'pw:api' || '' }}
           GH_USER: ${{ secrets.GH_USER }}
           GH_PASSWORD: ${{ secrets.GH_PASSWORD }}
           GH_BASE_URL_UI: ${{ secrets.GH_BASE_URL_UI }}
-
-      - name: Run Github E2E tests with no Auth
-        run: npm run test:chromium-no-auth
-        env:
-          CI: true
-          GH_USER: ${{ secrets.GH_USER }}
-          GH_PASSWORD: ${{ secrets.GH_PASSWORD }}
-          GH_BASE_URL_UI: ${{ secrets.GH_BASE_URL_UI }}
-
-      - name: Run API tests
-        run: npm run test:api
-        env:
-          CI: true
-          GH_USER: ${{ secrets.GH_USER }}
-          GH_PASSWORD: ${{ secrets.GH_PASSWORD }}
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
       - name: Verify Storage State File
-        if: always()
+        if: always() && matrix.test-group == 'auth'
         run: |
           echo "Checking for storage state file..."
           if [ -f auth/credentials.json ]; then
@@ -71,9 +94,167 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: test-reports
+          name: test-reports-${{ matrix.test-group }}
           path: |
             playwright-report/
             logs/automation.txt
             auth/
             trace/
+          retention-days: 7
+
+  report:
+    name: Generate Test Report
+    needs: test
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Download all test artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: ./all-artifacts
+
+      - name: List directory structure
+        run: |
+          echo "Downloaded artifact structure:"
+          find ./all-artifacts -type d | sort
+
+      - name: Create report directory
+        run: mkdir -p ./combined-report
+
+      - name: Copy reports manually
+        run: |
+          for group in auth no-auth api; do
+            if [ -d "./all-artifacts/test-reports-$group/playwright-report" ]; then
+              echo "Copying reports from test-reports-$group"
+              cp -r ./all-artifacts/test-reports-$group/playwright-report/* ./combined-report/ || true
+            fi
+          done
+
+      - name: Upload combined report
+        uses: actions/upload-artifact@v4
+        with:
+          name: combined-test-report
+          path: combined-report
+          retention-days: 14
+
+  security:
+    name: Security Checks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check for npm vulnerabilities
+        run: npm audit --production
+        continue-on-error: true
+
+      - name: Run secret scanner
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        continue-on-error: true
+
+  config-improvements:
+    name: Configuration Improvements
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [test, security]
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Create .env.example if not exists
+        run: |
+          if [ ! -f .env.example ]; then
+            cat > .env.example << EOF
+          # GitHub Authentication
+          GH_USER=your_github_username
+          GH_PASSWORD=your_github_password
+          GH_TOKEN=your_github_personal_access_token
+          GH_BASE_URL_UI=https://github.com
+
+          # Playwright Configuration
+          PLAYWRIGHT_HTML_REPORT=playwright-report
+          PLAYWRIGHT_JUNIT_OUTPUT_NAME=results.xml
+          EOF
+            
+            git config --global user.name "GitHub Actions"
+            git config --global user.email "actions@github.com"
+            git add .env.example
+            git commit -m "Add .env.example file" || echo "No changes to commit"
+            git push || echo "No changes to push"
+          fi
+
+      - name: Create Dependabot config if not exists
+        run: |
+          mkdir -p .github
+          if [ ! -f .github/dependabot.yml ]; then
+            cat > .github/dependabot.yml << EOF
+          version: 2
+          updates:
+            - package-ecosystem: "npm"
+              directory: "/"
+              schedule:
+                interval: "weekly"
+              open-pull-requests-limit: 10
+              versioning-strategy: auto
+          EOF
+            
+            git add .github/dependabot.yml
+            git commit -m "Add Dependabot configuration" || echo "No changes to commit"
+            git push || echo "No changes to push"
+          fi
+
+      - name: Update tsconfig.json if exists
+        run: |
+          if [ -f tsconfig.json ]; then
+            # Create a temporary file with updated tsconfig
+            cat > tsconfig.updated.json << EOF
+          {
+            "compilerOptions": {
+              "target": "ES2022",
+              "module": "NodeNext",
+              "moduleResolution": "NodeNext",
+              "esModuleInterop": true,
+              "strict": true,
+              "outDir": "dist",
+              "declaration": true,
+              "sourceMap": true,
+              "forceConsistentCasingInFileNames": true
+            },
+            "include": ["**/*.ts"],
+            "exclude": ["node_modules", "dist", "**/node_modules/*"]
+          }
+          EOF
+            
+            # Replace the original tsconfig with the updated one
+            mv tsconfig.updated.json tsconfig.json
+            
+            git add tsconfig.json
+            git commit -m "Update tsconfig.json to include all TypeScript files" || echo "No changes to commit"
+            git push || echo "No changes to push"
+          fi
