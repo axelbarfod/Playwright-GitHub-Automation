@@ -1,4 +1,4 @@
-name: Playwright Github Automation Suite
+name: Playwright CI/CD Pipeline
 
 on:
   push:
@@ -47,7 +47,6 @@ jobs:
       fail-fast: false
       matrix:
         test-group: [auth, no-auth, api]
-        browser: [chromium]
         include:
           - test-group: auth
             command: npm run test:chromium
@@ -55,7 +54,7 @@ jobs:
             command: npm run test:chromium-no-auth
           - test-group: api
             command: npm run test:api
-
+    
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -121,36 +120,58 @@ jobs:
           node-version: "18"
           cache: "npm"
 
+      - name: Install dependencies
+        run: npm ci
+
       - name: Download all test artifacts
         uses: actions/download-artifact@v4
         with:
           path: ./all-artifacts
 
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Create merged report
+      - name: List directories for debugging
         run: |
-          npx playwright merge-reports ./all-artifacts/test-reports-*/playwright-report
+          echo "Listing downloaded artifacts:"
+          find ./all-artifacts -type d | sort
+          echo "Checking for playwright-report directories:"
+          find ./all-artifacts -name "playwright-report" -type d | sort
+
+      - name: Create merged report directory
+        run: mkdir -p ./merged-report
+
+      - name: Copy individual reports to merged directory
+        run: |
+          for report_dir in $(find ./all-artifacts -name "playwright-report" -type d); do
+            if [ -d "$report_dir" ]; then
+              echo "Copying reports from $report_dir"
+              cp -R $report_dir/* ./merged-report/ || true
+            fi
+          done
 
       - name: Upload combined report
         uses: actions/upload-artifact@v4
         with:
           name: combined-test-report
-          path: playwright-report
+          path: merged-report
           retention-days: 14
-
+          
   security:
     name: Security Checks
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
-      - name: Run dependency vulnerability scan
-        uses: snyk/actions/node@master
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN || '' }}
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+          cache: "npm"
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Check for vulnerable dependencies
+        run: npx audit-ci --moderate
         continue-on-error: true
 
       - name: Run secret scanner
@@ -158,20 +179,41 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         continue-on-error: true
-
+        
   dependabot:
     name: Dependabot Automation
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: [test, security]
+    permissions:
+      contents: write
+      pull-requests: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
-      - name: Setup Node.js
+        
+      - name: Setup Dependabot
         uses: actions/setup-node@v4
         with:
           node-version: "18"
-
-      - name: Enable Dependabot
-        uses: github/dependabot-action@v1
+          
+      - name: Create Dependabot config if not exists
+        run: |
+          mkdir -p .github
+          if [ ! -f .github/dependabot.yml ]; then
+            cat > .github/dependabot.yml << EOF
+          version: 2
+          updates:
+            - package-ecosystem: "npm"
+              directory: "/"
+              schedule:
+                interval: "weekly"
+              open-pull-requests-limit: 10
+              versioning-strategy: auto
+          EOF
+            git config --global user.name "GitHub Actions"
+            git config --global user.email "actions@github.com"
+            git add .github/dependabot.yml
+            git commit -m "Add Dependabot configuration" || echo "No changes to commit"
+            git push || echo "No changes to push"
+          fi
