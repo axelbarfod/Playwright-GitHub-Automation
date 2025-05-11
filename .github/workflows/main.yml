@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
     inputs:
       debug:
-        description: 'Run workflow with debug logging'
+        description: "Run workflow with debug logging"
         required: false
         default: false
         type: boolean
@@ -54,7 +54,7 @@ jobs:
             command: npm run test:chromium-no-auth
           - test-group: api
             command: npm run test:api
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -158,16 +158,16 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "18"
           cache: "npm"
-          
+
       - name: Install dependencies
         run: npm ci
-        
+
       - name: Check for npm vulnerabilities
         run: npm audit --production
         continue-on-error: true
@@ -177,7 +177,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         continue-on-error: true
-        
+
   config-improvements:
     name: Configuration Improvements
     runs-on: ubuntu-latest
@@ -189,7 +189,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        
+
       - name: Create .env.example if not exists
         run: |
           if [ ! -f .env.example ]; then
