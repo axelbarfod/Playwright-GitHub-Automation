@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
     inputs:
       debug:
-        description: 'Run workflow with debug logging'
+        description: "Run workflow with debug logging"
         required: false
         default: false
         type: boolean
@@ -54,7 +54,7 @@ jobs:
             command: npm run test:chromium-no-auth
           - test-group: api
             command: npm run test:api
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -153,23 +153,23 @@ jobs:
           name: combined-test-report
           path: merged-report
           retention-days: 14
-          
+
   security:
     name: Security Checks
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "18"
           cache: "npm"
-          
+
       - name: Install dependencies
         run: npm ci
-        
+
       - name: Check for vulnerable dependencies
         run: npx audit-ci --moderate
         continue-on-error: true
@@ -179,7 +179,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         continue-on-error: true
-        
+
   dependabot:
     name: Dependabot Automation
     runs-on: ubuntu-latest
@@ -191,12 +191,12 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        
+
       - name: Setup Dependabot
         uses: actions/setup-node@v4
         with:
           node-version: "18"
-          
+
       - name: Create Dependabot config if not exists
         run: |
           mkdir -p .github
