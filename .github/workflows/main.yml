@@ -1,13 +1,21 @@
-name: CI
+name: Playwright Github Automation Suite
 
 on:
   push:
     branches: [main]
   pull_request:
     branches: [main]
+  workflow_dispatch:
+    inputs:
+      debug:
+        description: 'Run workflow with debug logging'
+        required: false
+        default: false
+        type: boolean
 
 jobs:
-  test:
+  validate:
+    name: Code Quality
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -17,13 +25,10 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "18"
-          cache: "npm" # Speed up by caching npm dependencies
+          cache: "npm"
 
       - name: Install dependencies
         run: npm ci
-
-      - name: Install Playwright browsers
-        run: npx playwright install --with-deps
 
       - name: Run linting
         run: npm run lint
@@ -31,32 +36,54 @@ jobs:
       - name: Check formatting
         run: npm run check:format
 
-      - name: Run Github E2E tests with Auth
-        run: npm run test:chromium
+      - name: Check TypeScript types
+        run: npx tsc --noEmit
+
+  test:
+    name: Run Tests
+    needs: validate
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        test-group: [auth, no-auth, api]
+        browser: [chromium]
+        include:
+          - test-group: auth
+            command: npm run test:chromium
+          - test-group: no-auth
+            command: npm run test:chromium-no-auth
+          - test-group: api
+            command: npm run test:api
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+
+      - name: Run ${{ matrix.test-group }} tests
+        run: ${{ matrix.command }}
         env:
           CI: true
+          DEBUG: ${{ github.event.inputs.debug == 'true' && 'pw:api' || '' }}
           GH_USER: ${{ secrets.GH_USER }}
           GH_PASSWORD: ${{ secrets.GH_PASSWORD }}
           GH_BASE_URL_UI: ${{ secrets.GH_BASE_URL_UI }}
-
-      - name: Run Github E2E tests with no Auth
-        run: npm run test:chromium-no-auth
-        env:
-          CI: true
-          GH_USER: ${{ secrets.GH_USER }}
-          GH_PASSWORD: ${{ secrets.GH_PASSWORD }}
-          GH_BASE_URL_UI: ${{ secrets.GH_BASE_URL_UI }}
-
-      - name: Run API tests
-        run: npm run test:api
-        env:
-          CI: true
-          GH_USER: ${{ secrets.GH_USER }}
-          GH_PASSWORD: ${{ secrets.GH_PASSWORD }}
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
       - name: Verify Storage State File
-        if: always()
+        if: always() && matrix.test-group == 'auth'
         run: |
           echo "Checking for storage state file..."
           if [ -f auth/credentials.json ]; then
@@ -71,9 +98,80 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: test-reports
+          name: test-reports-${{ matrix.test-group }}
           path: |
             playwright-report/
             logs/automation.txt
             auth/
             trace/
+          retention-days: 7
+
+  report:
+    name: Generate Test Report
+    needs: test
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+          cache: "npm"
+
+      - name: Download all test artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: ./all-artifacts
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Create merged report
+        run: |
+          npx playwright merge-reports ./all-artifacts/test-reports-*/playwright-report
+
+      - name: Upload combined report
+        uses: actions/upload-artifact@v4
+        with:
+          name: combined-test-report
+          path: playwright-report
+          retention-days: 14
+
+  security:
+    name: Security Checks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run dependency vulnerability scan
+        uses: snyk/actions/node@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN || '' }}
+        continue-on-error: true
+
+      - name: Run secret scanner
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        continue-on-error: true
+
+  dependabot:
+    name: Dependabot Automation
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [test, security]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+
+      - name: Enable Dependabot
+        uses: github/dependabot-action@v1
