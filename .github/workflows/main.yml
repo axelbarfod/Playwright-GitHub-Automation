@@ -36,9 +36,6 @@ jobs:
       - name: Check formatting
         run: npm run check:format
 
-      # Skip TypeScript type checking since it's configured incorrectly
-      # Will add it back after fixing tsconfig.json
-
   test:
     name: Run Tests
     needs: validate
