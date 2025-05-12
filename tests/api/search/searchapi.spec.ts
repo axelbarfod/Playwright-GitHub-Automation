@@ -3,7 +3,7 @@ import Ajv from "ajv";
 import addFormats from "ajv-formats";
 
 import { StringUtils } from "../../utils/stringUtils";
-import Logger from "../../utils/logger";
+import logger from "../../utils/logger";
 
 test.describe("Search API Tests", () => {
   const ajv = new Ajv({ allErrors: true });
@@ -31,7 +31,7 @@ test.describe("Search API Tests", () => {
     const isValid = validate(responseBody);
 
     if (!isValid) {
-      Logger.log(
+      logger.error(
         "Validation errors in:",
         StringUtils.prettyPrintJson(validate.errors),
       );
