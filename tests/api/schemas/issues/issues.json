@@ -1,0 +1,22 @@
+{
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "id": {
+        "type": "integer"
+      },
+      "number": {
+        "type": "integer"
+      },
+      "title": {
+        "type": "string"
+      },
+      "state": {
+        "type": "string",
+        "enum": ["open", "closed"]
+      }
+    },
+    "required": ["id", "number", "title", "state"]
+  }
+}
