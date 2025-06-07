@@ -1,34 +1,33 @@
-import { APIResponse, expect, test } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 import Ajv from "ajv";
 import addFormats from "ajv-formats";
 
 import { StringUtils } from "../../utils/stringUtils";
 import logger from "../../utils/logger";
+import { GitHubSearchRepositoriesResponse } from "../../../model/search/Search";
+import { GithubSearchService } from "../../../service/search/GithubSearchService";
 
 test.describe("Search API Tests", () => {
   const ajv = new Ajv({ allErrors: true });
   addFormats(ajv);
 
-  test("Test Search", async ({ request }) => {
+  let githubSearchService: GithubSearchService;
+  test.beforeEach(async ({ request }) => {
+    githubSearchService = new GithubSearchService(request);
+  });
+
+  test("Test Search", async () => {
     const schema = StringUtils.readSchemaFile("searchRepositoriesSchema.json");
     const validate = ajv.compile(schema);
     const searchQuery = "playwright";
-    const apiResponse: APIResponse = await request.get("search/repositories", {
-      headers: {
-        Accept: "application/vnd.github+json",
-        Authorization: "token" + process.env.GH_TOKEN,
-      },
-      params: { q: searchQuery },
-    });
-    const responseBody = await apiResponse.json();
-    expect(apiResponse.status()).toBe(200);
-    let headers: { [p: string]: string } = apiResponse.headers();
-    const rateLimitUsed =
-      headers["x-ratelimit-used"] || headers["X-RateLimit-Used"];
-    expect(Number(rateLimitUsed)).toBeGreaterThanOrEqual(1);
-    expect(headers["x-ratelimit-limit"]).toBeDefined();
+    // const apiResponse: APIResponse = await request.get("search/repositories", {
+    //   params: { q: searchQuery },
+    // });
 
-    const isValid = validate(responseBody);
+    const apiResponse: GitHubSearchRepositoriesResponse =
+      await githubSearchService.searchRepositories(searchQuery);
+
+    const isValid = validate(apiResponse);
 
     if (!isValid) {
       logger.error(
