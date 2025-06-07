@@ -2,20 +2,19 @@ import { expect, test } from "@playwright/test";
 import Ajv from "ajv";
 import addFormats from "ajv-formats";
 import { StringUtils } from "../../utils/stringUtils";
-import { GithubService } from "../../../service/GithubService";
+import { GithubIssueService } from "../../../service/issue/GithubIssueService";
 import {
   GitHubIssue,
   GitHubIssuesResponse,
 } from "../../../model/issues/IssuesModel";
-import logger from "../../utils/logger";
 
 test.describe("Issues Landing", () => {
   const schema = StringUtils.readSchemaFile("/issues/issues.json");
   const ajv = new Ajv({ allErrors: true });
   addFormats(ajv);
-  let githubService: GithubService;
+  let githubService: GithubIssueService;
   test.beforeEach(async ({ request }) => {
-    githubService = new GithubService(request);
+    githubService = new GithubIssueService(request);
   });
 
   test(`List Issues Assigned to ${process.env.GH_USER}`, async () => {
