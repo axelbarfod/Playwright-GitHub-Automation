@@ -1,4 +1,4 @@
-name: Playwright CI/CD Pipeline
+name: Playwright Github UI - Api Automation
 
 on:
   push:
