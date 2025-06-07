@@ -1,28 +1,22 @@
-import { expect, test } from "@playwright/test";
 import logger from "../../utils/logger";
-import Ajv, { ValidateFunction } from "ajv";
-import addFormats from "ajv-formats";
 import { StringUtils } from "../../utils/stringUtils";
-import { GithubRepoService } from "../../../service/repo/GithubRepoService";
 import { GitHubRepository } from "../../../model/repository/Repository";
 import { RetryUtils } from "../../utils/retryUtils";
+import { expect, test } from "../../../fixture/GithubFixture";
+import { ValidateFunction } from "ajv";
 
 test.describe(" Github Search API tests", () => {
   const ghUser = "torvalds";
   const project = "linux";
-  const ajv = new Ajv({ allErrors: true });
 
-  addFormats(ajv);
-  let githubService: GithubRepoService;
-  test.beforeEach(async ({ request }) => {
-    githubService = new GithubRepoService(request);
-  });
-
-  test("Get a repository from a specific user", async () => {
+  test("Get a repository from a specific user", async ({
+    ajv,
+    githubRepoService,
+  }) => {
     logger.info(`Searching for user ${ghUser} and repo ${project}`);
     const schema = StringUtils.readSchemaFile("/repositories/repo-schema.json");
     const validate: ValidateFunction = ajv.compile(schema);
-    const apiResponse: GitHubRepository = await githubService.getRepository(
+    const apiResponse: GitHubRepository = await githubRepoService.getRepository(
       ghUser,
       project,
     );
@@ -42,10 +36,13 @@ test.describe(" Github Search API tests", () => {
     expect(isValid).toBe(true);
   });
 
-  test("List repositories for the authenticated user.", async () => {
+  test("List repositories for the authenticated user.", async ({
+    ajv,
+    githubRepoService,
+  }) => {
     const schema = StringUtils.readSchemaFile("/repositories/user-repos.json");
     const validate = ajv.compile(schema);
-    const repos: GitHubRepository[] = await githubService.getRepositories();
+    const repos: GitHubRepository[] = await githubRepoService.getRepositories();
 
     if (repos.length > 0) {
       const isValid = validate(repos);
@@ -61,12 +58,15 @@ test.describe(" Github Search API tests", () => {
     logger.info(`Found ${repos.length} repositories`);
   });
 
-  test("Create a new repository and then delete it.", async () => {
+  test("Create a new repository and then delete it.", async ({
+    ajv,
+    githubRepoService,
+  }) => {
     const repoName = `test-repo-${Date.now()}`;
     logger.info(`Creating repository ${repoName}`);
     const schema = StringUtils.readSchemaFile("/repositories/repo-schema.json");
     const validate: ValidateFunction = ajv.compile(schema);
-    const data: GitHubRepository = await githubService.createRepository({
+    const data: GitHubRepository = await githubRepoService.createRepository({
       org: process.env.GH_USER!,
       name: repoName,
       description: "A test repository",
@@ -96,7 +96,7 @@ test.describe(" Github Search API tests", () => {
     // expect(gitHubRepository.name).toBe(repoName);
     const gitHubRepository: GitHubRepository =
       await RetryUtils.retryGitHubOperation(() =>
-        githubService.getRepository(process.env.GH_USER!, repoName),
+        githubRepoService.getRepository(process.env.GH_USER!, repoName),
       );
     expect(gitHubRepository.name).toBe(repoName);
 
@@ -105,7 +105,7 @@ test.describe(" Github Search API tests", () => {
     );
     //Delete the repo once it's created
     await RetryUtils.retryGitHubOperation(() =>
-      githubService.deleteRepository(repoName, {
+      githubRepoService.deleteRepository(repoName, {
         owner: process.env.GH_USER!,
         name: data.name,
       }),
