@@ -1,24 +1,19 @@
-import { expect, test } from "@playwright/test";
-import Ajv from "ajv";
-import addFormats from "ajv-formats";
 import { StringUtils } from "../../utils/stringUtils";
-import { GithubIssueService } from "../../../service/issue/GithubIssueService";
 import {
   GitHubIssue,
   GitHubIssuesResponse,
 } from "../../../model/issues/IssuesModel";
+import { expect, test } from "../../../fixture/GithubFixture";
 
 test.describe("Issues Landing", () => {
   const schema = StringUtils.readSchemaFile("/issues/issues.json");
-  const ajv = new Ajv({ allErrors: true });
-  addFormats(ajv);
-  let githubService: GithubIssueService;
-  test.beforeEach(async ({ request }) => {
-    githubService = new GithubIssueService(request);
-  });
 
-  test(`List Issues Assigned to ${process.env.GH_USER}`, async () => {
-    const apiResponse: GitHubIssuesResponse = await githubService.getIssues();
+  test(`List Issues Assigned to ${process.env.GH_USER}`, async ({
+    ajv,
+    githubIssueService,
+  }) => {
+    const apiResponse: GitHubIssuesResponse =
+      await githubIssueService.getIssues();
     expect(apiResponse.length).toBeGreaterThan(0);
     const validate = ajv.compile(schema);
     const isValid = validate(apiResponse);
@@ -29,8 +24,12 @@ test.describe("Issues Landing", () => {
     ).toBe(true);
   });
 
-  test(`List repository issues assigned to ${process.env.GH_USER}`, async () => {
-    const apiResponse: GitHubIssuesResponse = await githubService.getIssues();
+  test(`List repository issues assigned to ${process.env.GH_USER}`, async ({
+    ajv,
+    githubIssueService,
+  }) => {
+    const apiResponse: GitHubIssuesResponse =
+      await githubIssueService.getIssues();
 
     expect(apiResponse.length).toBeGreaterThan(0);
     expect(apiResponse[0].user.login).toBe(`${process.env.GH_USER}`);
@@ -42,14 +41,15 @@ test.describe("Issues Landing", () => {
     ).toBe(true);
   });
 
-  test("Get a specific issue", async () => {
-    const apiResponse: GitHubIssuesResponse = await githubService.getIssues();
+  test("Get a specific issue", async ({ githubIssueService }) => {
+    const apiResponse: GitHubIssuesResponse =
+      await githubIssueService.getIssues();
 
     if (apiResponse.length === 0) {
       return;
     }
 
-    const issue: GitHubIssue = await githubService.getIssue(
+    const issue: GitHubIssue = await githubIssueService.getIssue(
       apiResponse[0].number,
     );
     expect(issue.number).toBe(apiResponse[0].number);
