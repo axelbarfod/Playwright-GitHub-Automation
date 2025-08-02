@@ -29,21 +29,21 @@
     "test:api": "PROJECT_NAME=api playwright test --project api"
   },
   "devDependencies": {
-    "@playwright/test": "^1.51.0",
-    "@types/node": "^22.15.30",
-    "@typescript-eslint/eslint-plugin": "^8.33.1",
-    "@typescript-eslint/parser": "^8.33.1",
+    "@playwright/test": "^1.54.2",
+    "@types/node": "^24.1.0",
+    "@typescript-eslint/eslint-plugin": "^8.38.0",
+    "@typescript-eslint/parser": "^8.38.0",
     "ajv": "^8.17.1",
     "ajv-formats": "^3.0.1",
-    "eslint": "^9.28.0",
-    "eslint-config-prettier": "^10.1.1",
-    "eslint-plugin-prettier": "^5.4.1",
-    "prettier": "^3.5.3",
-    "typescript": "^5.5.3"
+    "eslint": "^9.32.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.3",
+    "prettier": "^3.6.2",
+    "typescript": "~5.8.3"
   },
   "private": true,
   "dependencies": {
-    "dotenv": "^16.4.7",
+    "dotenv": "^17.2.1",
     "winston": "^3.17.0"
   }
 }

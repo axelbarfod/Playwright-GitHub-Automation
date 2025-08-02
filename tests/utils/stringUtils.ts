@@ -11,8 +11,10 @@ export class StringUtils {
       return JSON.parse(fileContent);
     } catch (error) {
       console.error(`Error reading schema file ${schemaFileName}:`, error);
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
       throw new Error(
-        `Failed to read schema file ${schemaFileName}: ${error.message}`,
+        `Failed to read schema file ${schemaFileName}: ${errorMessage}`,
       );
     }
   }
@@ -26,8 +28,10 @@ export class StringUtils {
       return JSON.parse(fileContent);
     } catch (error) {
       console.error(`Error reading schema file ${schemaFileName}:`, error);
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
       throw new Error(
-        `Failed to read schema file ${schemaFileName}: ${error.message}`,
+        `Failed to read schema file ${schemaFileName}: ${errorMessage}`,
       );
     }
   }
