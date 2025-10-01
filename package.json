@@ -31,7 +31,7 @@
   "devDependencies": {
     "@playwright/test": "^1.54.2",
     "@types/node": "^24.1.0",
-    "@typescript-eslint/eslint-plugin": "^8.38.0",
+    "@typescript-eslint/eslint-plugin": "^8.45.0",
     "@typescript-eslint/parser": "^8.38.0",
     "ajv": "^8.17.1",
     "ajv-formats": "^3.0.1",
