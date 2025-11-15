@@ -1,6 +1,7 @@
 import { APIRequestContext } from "playwright-core";
 import { APIResponse } from "@playwright/test";
 import logger from "../../tests/utils/logger";
+import { APIMetricsCollector } from "../metrics/APIMetricsCollector";
 
 export abstract class BaseGithubService {
   protected readonly ISSUES_URL: string = "issues";
@@ -10,9 +11,14 @@ export abstract class BaseGithubService {
   protected readonly SEARCH_URL: string = "search";
   protected readonly REPOSITORIES_URL: string = "repositories";
   protected request: APIRequestContext;
+  protected metricsCollector?: APIMetricsCollector;
 
-  protected constructor(request: APIRequestContext) {
+  protected constructor(
+    request: APIRequestContext,
+    metricsCollector?: APIMetricsCollector,
+  ) {
     this.request = request;
+    this.metricsCollector = metricsCollector;
   }
 
   protected buildRepoUrl(repo: string, endpoint: string = ""): string {
@@ -23,6 +29,123 @@ export abstract class BaseGithubService {
   protected buildUserUrl(username: string = "", endpoint: string = ""): string {
     const baseUrl = username ? `users/${username}` : "user";
     return endpoint ? `${baseUrl}/${endpoint}` : baseUrl;
+  }
+
+  /**
+   * Make a tracked GET request with metrics collection
+   * @param url - The URL to request
+   * @param operation - Description of the operation
+   * @returns The API response
+   */
+  protected async get(url: string, operation: string): Promise<APIResponse> {
+    const startTime = performance.now();
+    const response = await this.request.get(url);
+    const responseTime = performance.now() - startTime;
+
+    // Record metrics if collector is available
+    if (this.metricsCollector) {
+      const headers = response.headers();
+      this.metricsCollector.recordAPICall({
+        endpoint: response.url(),
+        method: "GET",
+        statusCode: response.status(),
+        responseTime: Math.round(responseTime),
+        requestSize: 0, // Not easily available for GET requests
+        responseSize: parseInt(headers["content-length"] || "0"),
+        headers: {
+          "content-type": headers["content-type"] || "",
+          "x-ratelimit-remaining": headers["x-ratelimit-remaining"] || "",
+          "x-ratelimit-reset": headers["x-ratelimit-reset"] || "",
+        },
+        rateLimitRemaining: parseInt(
+          headers["x-ratelimit-remaining"] || "0",
+        ),
+        rateLimitReset: parseInt(headers["x-ratelimit-reset"] || "0"),
+      });
+    }
+
+    return response;
+  }
+
+  /**
+   * Make a tracked POST request with metrics collection
+   * @param url - The URL to request
+   * @param operation - Description of the operation
+   * @param data - The request body
+   * @returns The API response
+   */
+  protected async post(
+    url: string,
+    operation: string,
+    data?: any,
+  ): Promise<APIResponse> {
+    const startTime = performance.now();
+    const requestBody = data ? JSON.stringify(data) : undefined;
+    const response = await this.request.post(url, { data: requestBody });
+    const responseTime = performance.now() - startTime;
+
+    // Record metrics if collector is available
+    if (this.metricsCollector) {
+      const headers = response.headers();
+      this.metricsCollector.recordAPICall({
+        endpoint: response.url(),
+        method: "POST",
+        statusCode: response.status(),
+        responseTime: Math.round(responseTime),
+        requestSize: requestBody ? Buffer.byteLength(requestBody) : 0,
+        responseSize: parseInt(headers["content-length"] || "0"),
+        headers: {
+          "content-type": headers["content-type"] || "",
+          "x-ratelimit-remaining": headers["x-ratelimit-remaining"] || "",
+          "x-ratelimit-reset": headers["x-ratelimit-reset"] || "",
+        },
+        rateLimitRemaining: parseInt(
+          headers["x-ratelimit-remaining"] || "0",
+        ),
+        rateLimitReset: parseInt(headers["x-ratelimit-reset"] || "0"),
+      });
+    }
+
+    return response;
+  }
+
+  /**
+   * Make a tracked DELETE request with metrics collection
+   * @param url - The URL to request
+   * @param operation - Description of the operation
+   * @returns The API response
+   */
+  protected async delete(
+    url: string,
+    operation: string,
+  ): Promise<APIResponse> {
+    const startTime = performance.now();
+    const response = await this.request.delete(url);
+    const responseTime = performance.now() - startTime;
+
+    // Record metrics if collector is available
+    if (this.metricsCollector) {
+      const headers = response.headers();
+      this.metricsCollector.recordAPICall({
+        endpoint: response.url(),
+        method: "DELETE",
+        statusCode: response.status(),
+        responseTime: Math.round(responseTime),
+        requestSize: 0,
+        responseSize: parseInt(headers["content-length"] || "0"),
+        headers: {
+          "content-type": headers["content-type"] || "",
+          "x-ratelimit-remaining": headers["x-ratelimit-remaining"] || "",
+          "x-ratelimit-reset": headers["x-ratelimit-reset"] || "",
+        },
+        rateLimitRemaining: parseInt(
+          headers["x-ratelimit-remaining"] || "0",
+        ),
+        rateLimitReset: parseInt(headers["x-ratelimit-reset"] || "0"),
+      });
+    }
+
+    return response;
   }
 
   /**

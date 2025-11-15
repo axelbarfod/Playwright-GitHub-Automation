@@ -24,3 +24,7 @@ node_modules/
 /logs/automation.txt
 auth/credentials.json
 trace/global-setup-trace.zip
+
+# Allure
+/allure-results/
+/allure-report/
