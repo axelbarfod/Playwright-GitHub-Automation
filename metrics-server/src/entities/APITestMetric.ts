@@ -4,44 +4,44 @@ import {
   Column,
   CreateDateColumn,
   Index,
-} from 'typeorm';
+} from "typeorm";
 
-@Entity('api_test_metrics')
-@Index(['testName', 'createdAt'])
-@Index(['status', 'createdAt'])
-@Index(['environment'])
+@Entity("api_test_metrics")
+@Index(["testName", "createdAt"])
+@Index(["status", "createdAt"])
+@Index(["environment"])
 export class APITestMetric {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn("uuid")
   id!: string;
 
-  @Column({ type: 'varchar', length: 255 })
+  @Column({ type: "varchar", length: 255 })
   @Index()
   testId!: string;
 
-  @Column({ type: 'varchar', length: 500 })
+  @Column({ type: "varchar", length: 500 })
   testName!: string;
 
-  @Column({ type: 'varchar', length: 500 })
+  @Column({ type: "varchar", length: 500 })
   suiteName!: string;
 
-  @Column({ type: 'datetime' })
+  @Column({ type: "datetime" })
   @Index()
   timestamp!: Date;
 
-  @Column({ type: 'varchar', length: 10 })
+  @Column({ type: "varchar", length: 10 })
   environment!: string; // 'local' | 'ci'
 
-  @Column({ type: 'varchar', length: 20 })
+  @Column({ type: "varchar", length: 20 })
   status!: string; // 'passed' | 'failed' | 'skipped' | 'timedOut'
 
-  @Column({ type: 'int' })
+  @Column({ type: "int" })
   duration!: number; // milliseconds
 
-  @Column({ type: 'int', default: 0 })
+  @Column({ type: "int", default: 0 })
   retryCount!: number;
 
   // API Call Metrics (stored as JSON)
-  @Column({ type: 'json' })
+  @Column({ type: "json" })
   apiCalls!: {
     endpoint: string;
     method: string;
@@ -55,20 +55,20 @@ export class APITestMetric {
   }[];
 
   // Performance Aggregates
-  @Column({ type: 'int' })
+  @Column({ type: "int" })
   totalApiTime!: number;
 
-  @Column({ type: 'int' })
+  @Column({ type: "int" })
   averageResponseTime!: number;
 
-  @Column({ type: 'json' })
+  @Column({ type: "json" })
   slowestCall!: {
     endpoint: string;
     duration: number;
   };
 
   // Schema Validations (stored as JSON)
-  @Column({ type: 'json', nullable: true })
+  @Column({ type: "json", nullable: true })
   schemaValidations?: {
     schema: string;
     valid: boolean;
@@ -76,7 +76,7 @@ export class APITestMetric {
   }[];
 
   // Error Details (stored as JSON, nullable)
-  @Column({ type: 'json', nullable: true })
+  @Column({ type: "json", nullable: true })
   error?: {
     message: string;
     stack?: string;
@@ -88,7 +88,7 @@ export class APITestMetric {
   };
 
   // Additional Metadata (stored as JSON, nullable)
-  @Column({ type: 'json', nullable: true })
+  @Column({ type: "json", nullable: true })
   metadata?: Record<string, unknown>;
 
   @CreateDateColumn()

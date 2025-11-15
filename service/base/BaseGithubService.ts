@@ -57,9 +57,7 @@ export abstract class BaseGithubService {
           "x-ratelimit-remaining": headers["x-ratelimit-remaining"] || "",
           "x-ratelimit-reset": headers["x-ratelimit-reset"] || "",
         },
-        rateLimitRemaining: parseInt(
-          headers["x-ratelimit-remaining"] || "0",
-        ),
+        rateLimitRemaining: parseInt(headers["x-ratelimit-remaining"] || "0"),
         rateLimitReset: parseInt(headers["x-ratelimit-reset"] || "0"),
       });
     }
@@ -99,9 +97,7 @@ export abstract class BaseGithubService {
           "x-ratelimit-remaining": headers["x-ratelimit-remaining"] || "",
           "x-ratelimit-reset": headers["x-ratelimit-reset"] || "",
         },
-        rateLimitRemaining: parseInt(
-          headers["x-ratelimit-remaining"] || "0",
-        ),
+        rateLimitRemaining: parseInt(headers["x-ratelimit-remaining"] || "0"),
         rateLimitReset: parseInt(headers["x-ratelimit-reset"] || "0"),
       });
     }
@@ -138,9 +134,7 @@ export abstract class BaseGithubService {
           "x-ratelimit-remaining": headers["x-ratelimit-remaining"] || "",
           "x-ratelimit-reset": headers["x-ratelimit-reset"] || "",
         },
-        rateLimitRemaining: parseInt(
-          headers["x-ratelimit-remaining"] || "0",
-        ),
+        rateLimitRemaining: parseInt(headers["x-ratelimit-remaining"] || "0"),
         rateLimitReset: parseInt(headers["x-ratelimit-reset"] || "0"),
       });
     }

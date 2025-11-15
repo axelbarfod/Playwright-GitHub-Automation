@@ -41,6 +41,7 @@ Your metrics API should accept POST requests at:
 - `/api/metrics/e2e-tests` - for E2E test metrics
 
 **Headers:**
+
 - `Content-Type: application/json`
 - `Authorization: Bearer {METRICS_API_KEY}`
 
@@ -205,12 +206,13 @@ test("Get Issues", async ({ githubIssueService, metricsCollector }) => {
   metricsCollector.recordSchemaValidation(
     "issues.json",
     isValid,
-    validationTime
+    validationTime,
   );
 });
 ```
 
 **Automatically captured:**
+
 - All API calls (endpoint, response time, status code)
 - Rate limit information
 - Request/response sizes
@@ -239,7 +241,7 @@ test("Login Flow", async ({ page, metricsCollector }) => {
   metricsCollector.recordAction(
     "click",
     "#login-button",
-    performance.now() - actionStart
+    performance.now() - actionStart,
   );
 
   await expect(page).toHaveURL("/dashboard");
@@ -247,6 +249,7 @@ test("Login Flow", async ({ page, metricsCollector }) => {
 ```
 
 **Automatically captured:**
+
 - Page performance (load time, FCP, TTI)
 - Browser memory usage
 - Network requests and transfer sizes
@@ -265,7 +268,7 @@ test("My Test", async ({ metricsCollector }) => {
   const metadata = {
     feature: "authentication",
     team: "platform",
-    priority: "high"
+    priority: "high",
   };
 
   // Metadata will be included in the final metrics payload
@@ -283,7 +286,7 @@ test("My Test", async ({ metricsCollector }) => {
     metricsCollector.recordError(error, {
       endpoint: "/api/endpoint",
       statusCode: 500,
-      errorBody: "Server error"
+      errorBody: "Server error",
     });
     throw error;
   }
@@ -337,6 +340,7 @@ Once metrics are sent to your endpoint, you can:
 ### Metrics not being sent
 
 1. Check environment variables are set in `.env`:
+
    ```bash
    METRICS_ENDPOINT=https://your-api.com
    METRICS_API_KEY=your-key
@@ -356,6 +360,7 @@ This should **never happen** - metrics collection is wrapped in try-catch and wo
 ### Performance impact
 
 Metrics collection has minimal overhead:
+
 - API metrics: ~5-10ms per test
 - E2E metrics: ~50-100ms per test (due to page evaluation)
 

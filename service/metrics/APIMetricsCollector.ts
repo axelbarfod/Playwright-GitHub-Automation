@@ -59,11 +59,14 @@ export class APIMetricsCollector {
   /**
    * Record test error information
    */
-  recordError(error: Error, apiError?: {
-    endpoint: string;
-    statusCode: number;
-    errorBody: string;
-  }): void {
+  recordError(
+    error: Error,
+    apiError?: {
+      endpoint: string;
+      statusCode: number;
+      errorBody: string;
+    },
+  ): void {
     this.testError = {
       message: error.message,
       stack: error.stack,
@@ -81,7 +84,10 @@ export class APIMetricsCollector {
    * Build the complete metrics object
    * Call this at the end of the test
    */
-  buildMetrics(testInfo: TestInfo, metadata?: Record<string, unknown>): APITestMetrics {
+  buildMetrics(
+    testInfo: TestInfo,
+    metadata?: Record<string, unknown>,
+  ): APITestMetrics {
     const duration = performance.now() - this.startTime;
 
     const totalApiTime = this.apiCalls.reduce(

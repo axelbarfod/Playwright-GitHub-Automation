@@ -53,9 +53,7 @@ export class GithubSearchService extends BaseGithubService {
           "x-ratelimit-remaining": headers["x-ratelimit-remaining"] || "",
           "x-ratelimit-reset": headers["x-ratelimit-reset"] || "",
         },
-        rateLimitRemaining: parseInt(
-          headers["x-ratelimit-remaining"] || "0",
-        ),
+        rateLimitRemaining: parseInt(headers["x-ratelimit-remaining"] || "0"),
         rateLimitReset: parseInt(headers["x-ratelimit-reset"] || "0"),
       });
     }
@@ -78,7 +76,10 @@ export class GithubSearchService extends BaseGithubService {
     repo: string,
   ): Promise<GitHubRepository> {
     const url: string = `${this.REPOS_URL}/${owner}/${repo}`;
-    const apiResponse: APIResponse = await this.get(url, `Searching for ${repo}`);
+    const apiResponse: APIResponse = await this.get(
+      url,
+      `Searching for ${repo}`,
+    );
     return this.handleResponse<GitHubRepository>(
       apiResponse,
       `Searching for ${repo}`,

@@ -65,8 +65,7 @@ export class E2EMetricsCollector {
             ? navigation.domInteractive - navigation.fetchStart
             : 0,
           totalSize: resources.reduce(
-            (sum, r: PerformanceResourceTiming) =>
-              sum + (r.transferSize || 0),
+            (sum, r: PerformanceResourceTiming) => sum + (r.transferSize || 0),
             0,
           ),
           requestCount: resources.length,
@@ -163,8 +162,9 @@ export class E2EMetricsCollector {
   private async getNetworkMetrics(page: Page): Promise<NetworkMetric> {
     try {
       return await page.evaluate(() => {
-        const resources =
-          performance.getEntriesByType("resource") as PerformanceResourceTiming[];
+        const resources = performance.getEntriesByType(
+          "resource",
+        ) as PerformanceResourceTiming[];
 
         const resourceTypes = resources.reduce(
           (acc, r) => {

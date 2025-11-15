@@ -1,4 +1,7 @@
-import { APITestMetrics, E2ETestMetrics } from "../../model/metrics/MetricsModel";
+import {
+  APITestMetrics,
+  E2ETestMetrics,
+} from "../../model/metrics/MetricsModel";
 import logger from "../../tests/utils/logger";
 
 /**

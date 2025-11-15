@@ -1,6 +1,6 @@
-import { AppDataSource } from '../config/database.js';
-import { APITestMetric } from '../entities/APITestMetric.js';
-import { E2ETestMetric } from '../entities/E2ETestMetric.js';
+import { AppDataSource } from "../config/database.js";
+import { APITestMetric } from "../entities/APITestMetric.js";
+import { E2ETestMetric } from "../entities/E2ETestMetric.js";
 
 export interface QueryOptions {
   limit?: number;
@@ -75,7 +75,7 @@ export async function saveAPIMetrics(
     apiCalls: metrics.apiCalls || [],
     totalApiTime: metrics.totalApiTime || 0,
     averageResponseTime: metrics.averageResponseTime || 0,
-    slowestCall: metrics.slowestCall || { endpoint: '', duration: 0 },
+    slowestCall: metrics.slowestCall || { endpoint: "", duration: 0 },
     schemaValidations: metrics.schemaValidations || [],
     error: metrics.error,
     metadata: metrics.metadata,
@@ -140,7 +140,7 @@ export async function getAPIMetrics(
 
   return await repository.find({
     order: {
-      timestamp: 'DESC',
+      timestamp: "DESC",
     },
     take: limit,
     skip: offset,
@@ -160,7 +160,7 @@ export async function getE2EMetrics(
 
   return await repository.find({
     order: {
-      timestamp: 'DESC',
+      timestamp: "DESC",
     },
     take: limit,
     skip: offset,
@@ -181,26 +181,26 @@ export async function getMetricsSummary(): Promise<MetricsSummary> {
 
   // Get latest 10 metrics for pass rate calculation
   const latestApiMetrics = await apiRepository.find({
-    order: { timestamp: 'DESC' },
+    order: { timestamp: "DESC" },
     take: 10,
   });
 
   const latestE2eMetrics = await e2eRepository.find({
-    order: { timestamp: 'DESC' },
+    order: { timestamp: "DESC" },
     take: 10,
   });
 
   // Calculate pass rates
   const apiPassRate =
     latestApiMetrics.length > 0
-      ? (latestApiMetrics.filter((m) => m.status === 'passed').length /
+      ? (latestApiMetrics.filter((m) => m.status === "passed").length /
           latestApiMetrics.length) *
         100
       : 0;
 
   const e2ePassRate =
     latestE2eMetrics.length > 0
-      ? (latestE2eMetrics.filter((m) => m.status === 'passed').length /
+      ? (latestE2eMetrics.filter((m) => m.status === "passed").length /
           latestE2eMetrics.length) *
         100
       : 0;
