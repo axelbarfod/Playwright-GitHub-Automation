@@ -15,12 +15,52 @@ export interface MetricsSummary {
   lastUpdated: string;
 }
 
+// Input types for metrics (matching the request body structure)
+export interface APIMetricsInput {
+  testId: string;
+  testName: string;
+  suiteName: string;
+  timestamp: string;
+  environment: string;
+  status: string;
+  duration: number;
+  retryCount?: number;
+  apiCalls?: unknown[];
+  totalApiTime?: number;
+  averageResponseTime?: number;
+  slowestCall?: { endpoint: string; duration: number };
+  schemaValidations?: unknown[];
+  error?: unknown;
+  metadata?: unknown;
+}
+
+export interface E2EMetricsInput {
+  testId: string;
+  testName: string;
+  suiteName: string;
+  timestamp: string;
+  environment: string;
+  browser: string;
+  status: string;
+  duration: number;
+  retryCount?: number;
+  pageMetrics?: unknown[];
+  browserMetrics?: unknown;
+  actionMetrics?: unknown[];
+  networkMetrics?: unknown;
+  visualMetrics?: unknown;
+  error?: unknown;
+  metadata?: unknown;
+}
+
 /**
  * Save API test metrics to database
  * @param metrics - API test metrics object
  * @returns Saved entity
  */
-export async function saveAPIMetrics(metrics: any): Promise<APITestMetric> {
+export async function saveAPIMetrics(
+  metrics: APIMetricsInput,
+): Promise<APITestMetric> {
   const repository = AppDataSource.getRepository(APITestMetric);
 
   const entity = repository.create({
@@ -52,7 +92,9 @@ export async function saveAPIMetrics(metrics: any): Promise<APITestMetric> {
  * @param metrics - E2E test metrics object
  * @returns Saved entity
  */
-export async function saveE2EMetrics(metrics: any): Promise<E2ETestMetric> {
+export async function saveE2EMetrics(
+  metrics: E2EMetricsInput,
+): Promise<E2ETestMetric> {
   const repository = AppDataSource.getRepository(E2ETestMetric);
 
   const entity = repository.create({

@@ -34,10 +34,10 @@ export abstract class BaseGithubService {
   /**
    * Make a tracked GET request with metrics collection
    * @param url - The URL to request
-   * @param operation - Description of the operation
+   * @param _operation - Description of the operation (reserved for future use)
    * @returns The API response
    */
-  protected async get(url: string, operation: string): Promise<APIResponse> {
+  protected async get(url: string, _operation: string): Promise<APIResponse> {
     const startTime = performance.now();
     const response = await this.request.get(url);
     const responseTime = performance.now() - startTime;
@@ -70,14 +70,14 @@ export abstract class BaseGithubService {
   /**
    * Make a tracked POST request with metrics collection
    * @param url - The URL to request
-   * @param operation - Description of the operation
+   * @param _operation - Description of the operation (reserved for future use)
    * @param data - The request body
    * @returns The API response
    */
   protected async post(
     url: string,
-    operation: string,
-    data?: any,
+    _operation: string,
+    data?: unknown,
   ): Promise<APIResponse> {
     const startTime = performance.now();
     const requestBody = data ? JSON.stringify(data) : undefined;
@@ -112,12 +112,12 @@ export abstract class BaseGithubService {
   /**
    * Make a tracked DELETE request with metrics collection
    * @param url - The URL to request
-   * @param operation - Description of the operation
+   * @param _operation - Description of the operation (reserved for future use)
    * @returns The API response
    */
   protected async delete(
     url: string,
-    operation: string,
+    _operation: string,
   ): Promise<APIResponse> {
     const startTime = performance.now();
     const response = await this.request.delete(url);

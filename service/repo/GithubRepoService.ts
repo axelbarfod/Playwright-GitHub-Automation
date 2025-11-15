@@ -72,7 +72,7 @@ export class GithubRepoService extends BaseGithubService {
 
   async deleteRepository(
     repoName: string,
-    data: DeleteRepositoryRequest,
+    _data: DeleteRepositoryRequest,
   ): Promise<void> {
     const response: APIResponse = await this.delete(
       `${this.REPOS_URL}/${process.env.GH_USER}/${repoName}`,

@@ -74,8 +74,14 @@ export class MetricsService {
           `Failed to send metrics: ${response.status} ${response.statusText}. Response: ${errorText}`,
         );
       } else {
+        const testName =
+          typeof payload === "object" &&
+          payload !== null &&
+          "testName" in payload
+            ? (payload as { testName: string }).testName
+            : "unknown";
         logger.info(
-          `Metrics sent successfully (${response.status}) for test: ${(payload as any).testName}`,
+          `Metrics sent successfully (${response.status}) for test: ${testName}`,
         );
       }
     } catch (error) {

@@ -65,7 +65,8 @@ export class E2EMetricsCollector {
             ? navigation.domInteractive - navigation.fetchStart
             : 0,
           totalSize: resources.reduce(
-            (sum, r: any) => sum + (r.transferSize || 0),
+            (sum, r: PerformanceResourceTiming) =>
+              sum + (r.transferSize || 0),
             0,
           ),
           requestCount: resources.length,
@@ -134,7 +135,15 @@ export class E2EMetricsCollector {
   private async getBrowserMetrics(page: Page): Promise<BrowserMetric> {
     try {
       return await page.evaluate(() => {
-        const memory = (performance as any).memory;
+        // Chrome-specific memory API (not in standard Performance interface)
+        interface PerformanceWithMemory extends Performance {
+          memory?: {
+            usedJSHeapSize: number;
+            totalJSHeapSize: number;
+            jsHeapSizeLimit: number;
+          };
+        }
+        const memory = (performance as PerformanceWithMemory).memory;
         return {
           memoryUsage: memory
             ? Math.round(memory.usedJSHeapSize / 1024 / 1024)
@@ -154,10 +163,11 @@ export class E2EMetricsCollector {
   private async getNetworkMetrics(page: Page): Promise<NetworkMetric> {
     try {
       return await page.evaluate(() => {
-        const resources = performance.getEntriesByType("resource");
+        const resources =
+          performance.getEntriesByType("resource") as PerformanceResourceTiming[];
 
         const resourceTypes = resources.reduce(
-          (acc, r: any) => {
+          (acc, r) => {
             const type = r.initiatorType || "other";
             acc[type] = (acc[type] || 0) + 1;
             return acc;
@@ -166,7 +176,7 @@ export class E2EMetricsCollector {
         );
 
         const totalTransferred = resources.reduce(
-          (sum, r: any) => sum + (r.transferSize || 0),
+          (sum, r) => sum + (r.transferSize || 0),
           0,
         );
 

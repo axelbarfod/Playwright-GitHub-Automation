@@ -14,7 +14,15 @@ export class APIMetricsCollector {
   private apiCalls: APICallMetric[] = [];
   private schemaValidations: SchemaValidationMetric[] = [];
   private startTime: number = 0;
-  private testError?: { message: string; stack?: string };
+  private testError?: {
+    message: string;
+    stack?: string;
+    apiError?: {
+      endpoint: string;
+      statusCode: number;
+      errorBody: string;
+    };
+  };
 
   /**
    * Start collecting metrics - call at the beginning of test
@@ -113,7 +121,7 @@ export class APIMetricsCollector {
     };
 
     if (this.testError) {
-      metrics.error = this.testError as any;
+      metrics.error = this.testError;
     }
 
     if (metadata) {
