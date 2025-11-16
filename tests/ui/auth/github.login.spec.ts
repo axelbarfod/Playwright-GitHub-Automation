@@ -1,11 +1,16 @@
-import { expect, test } from "@playwright/test";
-import { GithubLoginPage } from "../../../pages/githubLoginPage";
+import { expect, test } from "../../../fixture/ui/GithubUIFixture";
 
 test.describe("Github Dashboard tests", { tag: "@debug" }, () => {
-  test("Login Successfully", async ({ page }) => {
+  test("Login Successfully", async ({
+    page,
+    gitHubLoginPage,
+    metricsCollector: _metricsCollector,
+  }) => {
     test.skip(process.env.CI !== undefined);
-    const ghLogin = new GithubLoginPage(page);
-    await ghLogin.gotoHome();
+
+    // Record page navigation
+    await gitHubLoginPage.gotoHome();
+
     await expect(
       page
         .locator(`button[data-login="${process.env.GH_USER!}"]`)

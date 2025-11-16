@@ -13,7 +13,7 @@ export class GithubCopilotPage {
   }
 
   async validatePageHasLoaded() {
-    await this.page.waitForLoadState("networkidle");
+    await this.page.waitForLoadState("domcontentloaded");
     await this.getStartedForFreeButton.isVisible();
   }
 }
