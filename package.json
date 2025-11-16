@@ -34,23 +34,23 @@
     "test:allure": "npm run test && npm run allure:generate && npm run allure:open"
   },
   "devDependencies": {
-    "@playwright/test": "^1.54.2",
-    "@types/node": "^24.1.0",
-    "@typescript-eslint/eslint-plugin": "^8.38.0",
-    "@typescript-eslint/parser": "^8.38.0",
+    "@playwright/test": "^1.55.1",
+    "@types/node": "^24.9.2",
+    "@typescript-eslint/eslint-plugin": "^8.46.2",
+    "@typescript-eslint/parser": "^8.46.2",
     "ajv": "^8.17.1",
     "ajv-formats": "^3.0.1",
     "allure-commandline": "^2.34.1",
     "allure-playwright": "^3.4.2",
-    "eslint": "^9.32.0",
+    "eslint": "^9.39.0",
     "eslint-config-prettier": "^10.1.8",
-    "eslint-plugin-prettier": "^5.5.3",
+    "eslint-plugin-prettier": "^5.5.4",
     "prettier": "^3.6.2",
-    "typescript": "~5.8.3"
+    "typescript": "~5.9.3"
   },
   "private": true,
   "dependencies": {
-    "dotenv": "^17.2.1",
-    "winston": "^3.17.0"
+    "dotenv": "^17.2.3",
+    "winston": "^3.18.3"
   }
 }
