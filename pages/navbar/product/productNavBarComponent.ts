@@ -2,7 +2,7 @@ import { Locator, Page } from "@playwright/test";
 
 export class ProductNavBarComponent {
   readonly page: Page;
-  readonly productButton: Locator;
+  readonly platformButton: Locator;
   readonly copilotLink: Locator;
   readonly securityLink: Locator;
   readonly actionsLink: Locator;
@@ -17,7 +17,7 @@ export class ProductNavBarComponent {
 
   constructor(page: Page) {
     this.page = page;
-    this.productButton = page.getByRole("button", { name: "Product" });
+    this.platformButton = page.getByRole("button", { name: "Platform" });
     this.copilotLink = page.getByRole("link", {
       name: "GitHub Copilot Write better",
     });
@@ -50,7 +50,7 @@ export class ProductNavBarComponent {
   }
 
   async openProductMenu() {
-    await this.productButton.click();
+    await this.platformButton.click();
   }
 
   async openCopilotPage() {

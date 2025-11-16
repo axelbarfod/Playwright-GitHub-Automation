@@ -1,0 +1,30 @@
+{
+  "testId": "test-123",
+  "testName": "Sample API Test",
+  "suiteName": "API Tests",
+  "timestamp": "2025-01-14T10:30:00Z",
+  "environment": "local",
+  "status": "passed",
+  "duration": 1250,
+  "retryCount": 0,
+  "apiCalls": [
+    {
+      "endpoint": "https://api.github.com/issues",
+      "method": "GET",
+      "statusCode": 200,
+      "responseTime": 450,
+      "requestSize": 0,
+      "responseSize": 5420,
+      "headers": {},
+      "rateLimitRemaining": 4999,
+      "rateLimitReset": 1234567890
+    }
+  ],
+  "totalApiTime": 450,
+  "averageResponseTime": 450,
+  "slowestCall": {
+    "endpoint": "https://api.github.com/issues",
+    "duration": 450
+  },
+  "schemaValidations": []
+}

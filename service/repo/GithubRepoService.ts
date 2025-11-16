@@ -6,10 +6,14 @@ import {
   DeleteRepositoryRequest,
   GitHubRepository,
 } from "../../model/repository/Repository";
+import { APIMetricsCollector } from "../metrics/APIMetricsCollector";
 
 export class GithubRepoService extends BaseGithubService {
-  constructor(request: APIRequestContext) {
-    super(request);
+  constructor(
+    request: APIRequestContext,
+    metricsCollector?: APIMetricsCollector,
+  ) {
+    super(request, metricsCollector);
   }
 
   /**
@@ -23,8 +27,9 @@ export class GithubRepoService extends BaseGithubService {
     ghUser: string,
     project: string,
   ): Promise<GitHubRepository> {
-    const apiResponse: APIResponse = await this.request.get(
+    const apiResponse: APIResponse = await this.get(
       `repos/${ghUser}/${project}`,
+      `Getting repo ${project}`,
     );
 
     return this.handleResponse<GitHubRepository>(
@@ -39,8 +44,9 @@ export class GithubRepoService extends BaseGithubService {
    * @return {Promise<GitHubRepository[]>} A promise that resolves to an array of GitHubRepository objects.
    */
   async getRepositories(): Promise<GitHubRepository[]> {
-    const apiResponse: APIResponse = await this.request.get(
+    const apiResponse: APIResponse = await this.get(
       `${this.USER_URL}/${this.REPOS_URL}`,
+      `Getting repos`,
     );
 
     return this.handleResponse<GitHubRepository[]>(
@@ -52,11 +58,10 @@ export class GithubRepoService extends BaseGithubService {
   async createRepository(
     data: CreateRepositoryRequest,
   ): Promise<GitHubRepository> {
-    const response: APIResponse = await this.request.post(
+    const response: APIResponse = await this.post(
       `${this.USER_URL}/${this.REPOS_URL}`,
-      {
-        data,
-      },
+      `Creating repository ${data.name}`,
+      data,
     );
 
     return this.handleResponse<GitHubRepository>(
@@ -67,13 +72,11 @@ export class GithubRepoService extends BaseGithubService {
 
   async deleteRepository(
     repoName: string,
-    data: DeleteRepositoryRequest,
+    _data: DeleteRepositoryRequest,
   ): Promise<void> {
-    const response: APIResponse = await this.request.delete(
+    const response: APIResponse = await this.delete(
       `${this.REPOS_URL}/${process.env.GH_USER}/${repoName}`,
-      {
-        data,
-      },
+      `Deleting repository ${repoName}`,
     );
 
     return this.handleResponse<void>(

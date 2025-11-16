@@ -11,9 +11,12 @@ import {
   PlaywrightWorkerOptions,
 } from "@playwright/test";
 import addFormats from "ajv-formats";
+import { APIMetricsCollector } from "../service/metrics/APIMetricsCollector";
+import { MetricsService } from "../service/metrics/MetricsService";
 
 type GithubFixture = {
   ajv: Ajv;
+  metricsCollector: APIMetricsCollector;
   githubIssueService: GithubIssueService;
   githubSearchService: GithubSearchService;
   githubRepoService: GithubRepoService;
@@ -29,18 +32,44 @@ export const test: TestType<
     await use(ajv);
   },
 
-  githubIssueService: async ({ request }, use) => {
-    const githubIssueService = new GithubIssueService(request);
+  metricsCollector: async ({}, use, testInfo) => {
+    const collector = new APIMetricsCollector();
+    const metricsService = new MetricsService();
+
+    // Start collecting metrics
+    collector.start();
+
+    // Provide the collector to the test
+    await use(collector);
+
+    // After test completes, build and send metrics
+    try {
+      const metrics = collector.buildMetrics(testInfo);
+      await metricsService.pushAPIMetrics(metrics);
+    } catch (error) {
+      // Don't fail the test if metrics fail
+      console.error("Failed to send metrics:", error);
+    }
+  },
+
+  githubIssueService: async ({ request, metricsCollector }, use) => {
+    const githubIssueService = new GithubIssueService(
+      request,
+      metricsCollector,
+    );
     await use(githubIssueService);
   },
 
-  githubSearchService: async ({ request }, use) => {
-    const githubSearchService = new GithubSearchService(request);
+  githubSearchService: async ({ request, metricsCollector }, use) => {
+    const githubSearchService = new GithubSearchService(
+      request,
+      metricsCollector,
+    );
     await use(githubSearchService);
   },
 
-  githubRepoService: async ({ request }, use) => {
-    const githubRepoService = new GithubRepoService(request);
+  githubRepoService: async ({ request, metricsCollector }, use) => {
+    const githubRepoService = new GithubRepoService(request, metricsCollector);
     await use(githubRepoService);
   },
 });

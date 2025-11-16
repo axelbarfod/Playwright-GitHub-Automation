@@ -1,27 +1,30 @@
-import { expect, test } from "@playwright/test";
-import { GithubHomePage } from "../../../pages/githubHomePage";
-import { GithubCopilotPage } from "../../../pages/githubCopilotPage";
+import { expect, test } from "../../../fixture/ui/GithubUIFixture";
 
 test.describe("Navigate to landing page", () => {
-  test.beforeEach(async ({ page }) => {
-    const githubHomePage: GithubHomePage = new GithubHomePage(page);
+  test.beforeEach(async ({ githubHomePage }) => {
     await githubHomePage.goToHomePage();
   });
 
-  test("navigates to landing page", async ({ page }) => {
-    const githubHomePage = new GithubHomePage(page);
+  test("navigates to landing page", async ({
+    page,
+    githubHomePage,
+    metricsCollector: _metricsCollector,
+  }) => {
     await githubHomePage.validatePageHasLoaded();
     //await expect(page).toHaveScreenshot("github-landing-page.png");
-    await expect(page).toHaveTitle(/GitHub.*Build and ship software/);
+    await expect(page).toHaveTitle(
+      "GitHub · Change is constant. GitHub keeps you ahead. · GitHub",
+    );
   });
 
   test("Click on products and then go to copilot @no-auth", async ({
     page,
+    githubHomePage,
+    githubCopilotPage,
+    metricsCollector: _metricsCollector,
   }) => {
-    const githubHomePage = new GithubHomePage(page);
     await githubHomePage.validatePageHasLoaded();
     await githubHomePage.navigateToCopilotPage();
-    const githubCopilotPage = new GithubCopilotPage(page);
     await githubCopilotPage.validatePageHasLoaded();
     await expect(page).toHaveTitle(/GitHub Copilot.*AI pair programmer/);
   });

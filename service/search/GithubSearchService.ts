@@ -3,13 +3,17 @@ import { APIRequestContext } from "playwright-core";
 import { GitHubSearchRepositoriesResponse } from "../../model/search/Search";
 import { APIResponse } from "@playwright/test";
 import { GitHubRepository } from "../../model/repository/Repository";
+import { APIMetricsCollector } from "../metrics/APIMetricsCollector";
 
 export class GithubSearchService extends BaseGithubService {
   private readonly SEARCH_REPOSITORIES_URL: string =
     this.SEARCH_URL + "/" + this.REPOSITORIES_URL;
 
-  constructor(request: APIRequestContext) {
-    super(request);
+  constructor(
+    request: APIRequestContext,
+    metricsCollector?: APIMetricsCollector,
+  ) {
+    super(request, metricsCollector);
   }
 
   /**
@@ -21,6 +25,9 @@ export class GithubSearchService extends BaseGithubService {
   async searchRepositories(
     query: string,
   ): Promise<GitHubSearchRepositoriesResponse> {
+    // For GET requests with params, we need to use the request context directly
+    // and then manually record metrics
+    const startTime = performance.now();
     const apiResponse: APIResponse = await this.request.get(
       this.SEARCH_REPOSITORIES_URL,
       {
@@ -29,6 +36,27 @@ export class GithubSearchService extends BaseGithubService {
         },
       },
     );
+    const responseTime = performance.now() - startTime;
+
+    // Record metrics manually for parameterized requests
+    if (this.metricsCollector) {
+      const headers = apiResponse.headers();
+      this.metricsCollector.recordAPICall({
+        endpoint: `${apiResponse.url()}`,
+        method: "GET",
+        statusCode: apiResponse.status(),
+        responseTime: Math.round(responseTime),
+        requestSize: 0,
+        responseSize: parseInt(headers["content-length"] || "0"),
+        headers: {
+          "content-type": headers["content-type"] || "",
+          "x-ratelimit-remaining": headers["x-ratelimit-remaining"] || "",
+          "x-ratelimit-reset": headers["x-ratelimit-reset"] || "",
+        },
+        rateLimitRemaining: parseInt(headers["x-ratelimit-remaining"] || "0"),
+        rateLimitReset: parseInt(headers["x-ratelimit-reset"] || "0"),
+      });
+    }
 
     return this.handleResponse<GitHubSearchRepositoriesResponse>(
       apiResponse,
@@ -48,7 +76,10 @@ export class GithubSearchService extends BaseGithubService {
     repo: string,
   ): Promise<GitHubRepository> {
     const url: string = `${this.REPOS_URL}/${owner}/${repo}`;
-    const apiResponse: APIResponse = await this.request.get(url);
+    const apiResponse: APIResponse = await this.get(
+      url,
+      `Searching for ${repo}`,
+    );
     return this.handleResponse<GitHubRepository>(
       apiResponse,
       `Searching for ${repo}`,
