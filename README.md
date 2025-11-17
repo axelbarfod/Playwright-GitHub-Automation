@@ -71,15 +71,88 @@ Check in the [package.json](package.json) for the rest of the npm commands avail
 - Prettier: Code formatting for consistency.
 - GitHub Actions: CI pipeline for quality checks. (wip)
 
-### API Testing
+## API Testing
 
-This project includes API tests for GitHub’s REST API, verifying endpoints like:
+This project includes comprehensive API tests for GitHub's REST API with full JSON schema validation, metrics collection, and automated cleanup.
 
-- `GET /search/repositories`: Ensures repository search works as expected.
+### Supported Endpoints
 
-Run API tests with:
+#### Repositories API
 
-npm run test
+- `GET /repos/{owner}/{repo}` - Get a specific repository
+- `GET /user/repos` - List repositories for authenticated user
+- `POST /user/repos` - Create a new repository
+- `DELETE /repos/{owner}/{repo}` - Delete a repository
+
+#### Pull Requests API
+
+- `GET /repos/{owner}/{repo}/pulls` - List pull requests (with filtering)
+- `GET /repos/{owner}/{repo}/pulls/{number}` - Get a specific pull request
+- `POST /repos/{owner}/{repo}/pulls` - Create a pull request
+- `PATCH /repos/{owner}/{repo}/pulls/{number}` - Update a pull request
+- `PUT /repos/{owner}/{repo}/pulls/{number}/merge` - Merge a pull request
+- `GET /repos/{owner}/{repo}/pulls/{number}/merge` - Check if PR is merged
+
+#### Issues API
+
+- `GET /issues` - List issues assigned to authenticated user
+- `GET /repos/{owner}/{repo}/issues/{number}` - Get a specific issue
+
+#### Search API
+
+- `GET /search/repositories` - Search for repositories by query
+
+### Test Features
+
+- **JSON Schema Validation**: All API responses are validated against JSON schemas
+- **Metrics Collection**: Automatic tracking of API performance, rate limits, and response times
+- **Retry Logic**: Handles GitHub API eventual consistency with exponential backoff
+- **Automatic Cleanup**: Test repositories are automatically deleted after test completion
+- **Type Safety**: Full TypeScript types for all API requests and responses
+
+### Running API Tests
+
+Run all API tests:
+
+```bash
+npm test -- --project=api
+```
+
+Run specific test suites:
+
+```bash
+# Pull Requests tests
+npx playwright test tests/api/pullrequests --project=api
+
+# Repositories tests
+npx playwright test tests/api/repositories --project=api
+
+# Issues tests
+npx playwright test tests/api/issues --project=api
+
+# Search tests
+npx playwright test tests/api/search --project=api
+```
+
+### Environment Variables
+
+Create a `.env` file with:
+
+```
+GH_TOKEN=your_github_personal_access_token
+GH_USER=your_github_username
+METRICS_ENDPOINT=http://localhost:3000
+METRICS_API_KEY=your_metrics_api_key
+```
+
+### Test Reports
+
+View test results with Allure reports:
+
+```bash
+npm run allure:generate
+npm run allure:open
+```
 
 ## Contributing
 

@@ -1,0 +1,59 @@
+{
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "id": { "type": "integer" },
+      "node_id": { "type": "string" },
+      "url": { "type": "string" },
+      "html_url": { "type": "string" },
+      "number": { "type": "integer" },
+      "state": { "type": "string", "enum": ["open", "closed"] },
+      "locked": { "type": "boolean" },
+      "title": { "type": "string" },
+      "user": {
+        "type": "object",
+        "properties": {
+          "login": { "type": "string" },
+          "id": { "type": "integer" }
+        },
+        "required": ["login", "id"]
+      },
+      "body": { "type": ["string", "null"] },
+      "created_at": { "type": "string", "format": "date-time" },
+      "updated_at": { "type": "string", "format": "date-time" },
+      "closed_at": { "type": ["string", "null"], "format": "date-time" },
+      "merged_at": { "type": ["string", "null"], "format": "date-time" },
+      "draft": { "type": "boolean" },
+      "head": {
+        "type": "object",
+        "properties": {
+          "label": { "type": "string" },
+          "ref": { "type": "string" },
+          "sha": { "type": "string" }
+        },
+        "required": ["label", "ref", "sha"]
+      },
+      "base": {
+        "type": "object",
+        "properties": {
+          "label": { "type": "string" },
+          "ref": { "type": "string" },
+          "sha": { "type": "string" }
+        },
+        "required": ["label", "ref", "sha"]
+      }
+    },
+    "required": [
+      "id",
+      "number",
+      "state",
+      "title",
+      "user",
+      "created_at",
+      "updated_at",
+      "head",
+      "base"
+    ]
+  }
+}

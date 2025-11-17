@@ -1,0 +1,125 @@
+{
+  "type": "object",
+  "properties": {
+    "id": { "type": "integer" },
+    "node_id": { "type": "string" },
+    "url": { "type": "string" },
+    "html_url": { "type": "string" },
+    "diff_url": { "type": "string" },
+    "patch_url": { "type": "string" },
+    "issue_url": { "type": "string" },
+    "number": { "type": "integer" },
+    "state": { "type": "string", "enum": ["open", "closed"] },
+    "locked": { "type": "boolean" },
+    "title": { "type": "string" },
+    "user": {
+      "type": "object",
+      "properties": {
+        "login": { "type": "string" },
+        "id": { "type": "integer" },
+        "node_id": { "type": "string" },
+        "avatar_url": { "type": "string" },
+        "type": { "type": "string" }
+      },
+      "required": ["login", "id"]
+    },
+    "body": { "type": ["string", "null"] },
+    "created_at": { "type": "string", "format": "date-time" },
+    "updated_at": { "type": "string", "format": "date-time" },
+    "closed_at": { "type": ["string", "null"], "format": "date-time" },
+    "merged_at": { "type": ["string", "null"], "format": "date-time" },
+    "merge_commit_sha": { "type": ["string", "null"] },
+    "draft": { "type": "boolean" },
+    "head": {
+      "type": "object",
+      "properties": {
+        "label": { "type": "string" },
+        "ref": { "type": "string" },
+        "sha": { "type": "string" },
+        "user": {
+          "type": "object",
+          "properties": {
+            "login": { "type": "string" },
+            "id": { "type": "integer" }
+          },
+          "required": ["login", "id"]
+        },
+        "repo": {
+          "type": "object",
+          "properties": {
+            "id": { "type": "integer" },
+            "name": { "type": "string" },
+            "full_name": { "type": "string" }
+          },
+          "required": ["id", "name", "full_name"]
+        }
+      },
+      "required": ["label", "ref", "sha", "user", "repo"]
+    },
+    "base": {
+      "type": "object",
+      "properties": {
+        "label": { "type": "string" },
+        "ref": { "type": "string" },
+        "sha": { "type": "string" },
+        "user": {
+          "type": "object",
+          "properties": {
+            "login": { "type": "string" },
+            "id": { "type": "integer" }
+          },
+          "required": ["login", "id"]
+        },
+        "repo": {
+          "type": "object",
+          "properties": {
+            "id": { "type": "integer" },
+            "name": { "type": "string" },
+            "full_name": { "type": "string" }
+          },
+          "required": ["id", "name", "full_name"]
+        }
+      },
+      "required": ["label", "ref", "sha", "user", "repo"]
+    },
+    "_links": {
+      "type": "object",
+      "properties": {
+        "self": {
+          "type": "object",
+          "properties": {
+            "href": { "type": "string" }
+          },
+          "required": ["href"]
+        },
+        "html": {
+          "type": "object",
+          "properties": {
+            "href": { "type": "string" }
+          },
+          "required": ["href"]
+        }
+      },
+      "required": ["self", "html"]
+    },
+    "merged": { "type": "boolean" },
+    "mergeable": { "type": ["boolean", "null"] },
+    "mergeable_state": { "type": "string" },
+    "comments": { "type": "integer" },
+    "commits": { "type": "integer" },
+    "additions": { "type": "integer" },
+    "deletions": { "type": "integer" },
+    "changed_files": { "type": "integer" }
+  },
+  "required": [
+    "id",
+    "number",
+    "state",
+    "title",
+    "user",
+    "created_at",
+    "updated_at",
+    "head",
+    "base"
+  ]
+}

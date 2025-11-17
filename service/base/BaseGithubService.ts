@@ -106,6 +106,86 @@ export abstract class BaseGithubService {
   }
 
   /**
+   * Make a tracked PATCH request with metrics collection
+   * @param url - The URL to request
+   * @param _operation - Description of the operation (reserved for future use)
+   * @param data - The request body
+   * @returns The API response
+   */
+  protected async patch(
+    url: string,
+    _operation: string,
+    data?: unknown,
+  ): Promise<APIResponse> {
+    const startTime = performance.now();
+    const requestBody = data ? JSON.stringify(data) : undefined;
+    const response = await this.request.patch(url, { data: requestBody });
+    const responseTime = performance.now() - startTime;
+
+    // Record metrics if collector is available
+    if (this.metricsCollector) {
+      const headers = response.headers();
+      this.metricsCollector.recordAPICall({
+        endpoint: response.url(),
+        method: "PATCH",
+        statusCode: response.status(),
+        responseTime: Math.round(responseTime),
+        requestSize: requestBody ? Buffer.byteLength(requestBody) : 0,
+        responseSize: parseInt(headers["content-length"] || "0"),
+        headers: {
+          "content-type": headers["content-type"] || "",
+          "x-ratelimit-remaining": headers["x-ratelimit-remaining"] || "",
+          "x-ratelimit-reset": headers["x-ratelimit-reset"] || "",
+        },
+        rateLimitRemaining: parseInt(headers["x-ratelimit-remaining"] || "0"),
+        rateLimitReset: parseInt(headers["x-ratelimit-reset"] || "0"),
+      });
+    }
+
+    return response;
+  }
+
+  /**
+   * Make a tracked PUT request with metrics collection
+   * @param url - The URL to request
+   * @param _operation - Description of the operation (reserved for future use)
+   * @param data - The request body
+   * @returns The API response
+   */
+  protected async put(
+    url: string,
+    _operation: string,
+    data?: unknown,
+  ): Promise<APIResponse> {
+    const startTime = performance.now();
+    const requestBody = data ? JSON.stringify(data) : undefined;
+    const response = await this.request.put(url, { data: requestBody });
+    const responseTime = performance.now() - startTime;
+
+    // Record metrics if collector is available
+    if (this.metricsCollector) {
+      const headers = response.headers();
+      this.metricsCollector.recordAPICall({
+        endpoint: response.url(),
+        method: "PUT",
+        statusCode: response.status(),
+        responseTime: Math.round(responseTime),
+        requestSize: requestBody ? Buffer.byteLength(requestBody) : 0,
+        responseSize: parseInt(headers["content-length"] || "0"),
+        headers: {
+          "content-type": headers["content-type"] || "",
+          "x-ratelimit-remaining": headers["x-ratelimit-remaining"] || "",
+          "x-ratelimit-reset": headers["x-ratelimit-reset"] || "",
+        },
+        rateLimitRemaining: parseInt(headers["x-ratelimit-remaining"] || "0"),
+        rateLimitReset: parseInt(headers["x-ratelimit-reset"] || "0"),
+      });
+    }
+
+    return response;
+  }
+
+  /**
    * Make a tracked DELETE request with metrics collection
    * @param url - The URL to request
    * @param _operation - Description of the operation (reserved for future use)
