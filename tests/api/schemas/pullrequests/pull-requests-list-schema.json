@@ -44,6 +44,16 @@
         "required": ["label", "ref", "sha"]
       }
     },
-    "required": ["id", "number", "state", "title", "user", "created_at", "updated_at", "head", "base"]
+    "required": [
+      "id",
+      "number",
+      "state",
+      "title",
+      "user",
+      "created_at",
+      "updated_at",
+      "head",
+      "base"
+    ]
   }
 }

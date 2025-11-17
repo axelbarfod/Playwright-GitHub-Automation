@@ -78,12 +78,14 @@ This project includes comprehensive API tests for GitHub's REST API with full JS
 ### Supported Endpoints
 
 #### Repositories API
+
 - `GET /repos/{owner}/{repo}` - Get a specific repository
 - `GET /user/repos` - List repositories for authenticated user
 - `POST /user/repos` - Create a new repository
 - `DELETE /repos/{owner}/{repo}` - Delete a repository
 
 #### Pull Requests API
+
 - `GET /repos/{owner}/{repo}/pulls` - List pull requests (with filtering)
 - `GET /repos/{owner}/{repo}/pulls/{number}` - Get a specific pull request
 - `POST /repos/{owner}/{repo}/pulls` - Create a pull request
@@ -92,10 +94,12 @@ This project includes comprehensive API tests for GitHub's REST API with full JS
 - `GET /repos/{owner}/{repo}/pulls/{number}/merge` - Check if PR is merged
 
 #### Issues API
+
 - `GET /issues` - List issues assigned to authenticated user
 - `GET /repos/{owner}/{repo}/issues/{number}` - Get a specific issue
 
 #### Search API
+
 - `GET /search/repositories` - Search for repositories by query
 
 ### Test Features
@@ -109,11 +113,13 @@ This project includes comprehensive API tests for GitHub's REST API with full JS
 ### Running API Tests
 
 Run all API tests:
+
 ```bash
 npm test -- --project=api
 ```
 
 Run specific test suites:
+
 ```bash
 # Pull Requests tests
 npx playwright test tests/api/pullrequests --project=api
@@ -131,6 +137,7 @@ npx playwright test tests/api/search --project=api
 ### Environment Variables
 
 Create a `.env` file with:
+
 ```
 GH_TOKEN=your_github_personal_access_token
 GH_USER=your_github_username
@@ -141,6 +148,7 @@ METRICS_API_KEY=your_metrics_api_key
 ### Test Reports
 
 View test results with Allure reports:
+
 ```bash
 npm run allure:generate
 npm run allure:open

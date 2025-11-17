@@ -24,14 +24,10 @@ test.describe("Github Pull Requests API tests", () => {
     const validate: ValidateFunction = ajv.compile(schema);
 
     const pullRequests: PullRequest[] =
-      await githubPullRequestService.listPullRequests(
-        publicOwner,
-        publicRepo,
-        {
-          state: "closed",
-          per_page: 5,
-        },
-      );
+      await githubPullRequestService.listPullRequests(publicOwner, publicRepo, {
+        state: "closed",
+        per_page: 5,
+      });
 
     expect(pullRequests).toBeDefined();
     expect(Array.isArray(pullRequests)).toBe(true);
@@ -75,14 +71,10 @@ test.describe("Github Pull Requests API tests", () => {
     const validate: ValidateFunction = ajv.compile(schema);
 
     const pullRequests: PullRequest[] =
-      await githubPullRequestService.listPullRequests(
-        publicOwner,
-        publicRepo,
-        {
-          state: "closed",
-          per_page: 1,
-        },
-      );
+      await githubPullRequestService.listPullRequests(publicOwner, publicRepo, {
+        state: "closed",
+        per_page: 1,
+      });
 
     if (pullRequests.length > 0) {
       const prNumber = pullRequests[0].number;
