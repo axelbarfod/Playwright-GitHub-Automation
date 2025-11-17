@@ -19,6 +19,30 @@ export class BasePage {
   }
 
   async navigateToCodeSearch() {
-    await this.gitHubNavBarComponent.navigateToCodeSearch(); //gtq 4331 GSZ6038 gtg8686
+    await this.gitHubNavBarComponent.navigateToCodeSearch();
+  }
+
+  async navigateToSecurityPage() {
+    await this.gitHubNavBarComponent.navigateToSecurityPage();
+  }
+
+  async navigateToActionsPage() {
+    await this.gitHubNavBarComponent.navigateToActionsPage();
+  }
+
+  async navigateToCodespacesPage() {
+    await this.gitHubNavBarComponent.navigateToCodespacesPage();
+  }
+
+  async navigateToIssuesPage() {
+    await this.gitHubNavBarComponent.navigateToIssuesPage();
+  }
+
+  async navigateToCodeReviewPage() {
+    await this.gitHubNavBarComponent.navigateToCodeReviewPage();
+  }
+
+  async navigateToDiscussionsPage() {
+    await this.gitHubNavBarComponent.navigateToDiscussionsPage();
   }
 }

@@ -17,4 +17,28 @@ export class GitHubNavBarComponent {
   async navigateToCodeSearch() {
     await this.productNavBarComponent.openCodeSearchPage();
   }
+
+  async navigateToSecurityPage() {
+    await this.productNavBarComponent.openSecurityPage();
+  }
+
+  async navigateToActionsPage() {
+    await this.productNavBarComponent.openActionsPage();
+  }
+
+  async navigateToCodespacesPage() {
+    await this.productNavBarComponent.openCodespacesPage();
+  }
+
+  async navigateToIssuesPage() {
+    await this.productNavBarComponent.openIssuesPage();
+  }
+
+  async navigateToCodeReviewPage() {
+    await this.productNavBarComponent.openCodeReviewPage();
+  }
+
+  async navigateToDiscussionsPage() {
+    await this.productNavBarComponent.openDiscussionsPage();
+  }
 }

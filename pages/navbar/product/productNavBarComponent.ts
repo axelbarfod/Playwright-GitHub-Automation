@@ -62,4 +62,34 @@ export class ProductNavBarComponent {
     await this.openProductMenu();
     await this.codeSearchLink.click();
   }
+
+  async openSecurityPage() {
+    await this.openProductMenu();
+    await this.securityLink.click();
+  }
+
+  async openActionsPage() {
+    await this.openProductMenu();
+    await this.actionsLink.click();
+  }
+
+  async openCodespacesPage() {
+    await this.openProductMenu();
+    await this.codeSpaceLink.click();
+  }
+
+  async openIssuesPage() {
+    await this.openProductMenu();
+    await this.issuesLink.click();
+  }
+
+  async openCodeReviewPage() {
+    await this.openProductMenu();
+    await this.codeReviewLink.click();
+  }
+
+  async openDiscussionsPage() {
+    await this.openProductMenu();
+    await this.discussionLink.click();
+  }
 }
