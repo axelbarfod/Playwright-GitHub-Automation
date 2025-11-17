@@ -2,6 +2,7 @@ import Ajv from "ajv";
 import { GithubSearchService } from "../service/search/GithubSearchService";
 import { GithubIssueService } from "../service/issue/GithubIssueService";
 import { GithubRepoService } from "../service/repo/GithubRepoService";
+import { GithubPullRequestService } from "../service/pullrequest/GithubPullRequestService";
 import {
   test as base,
   TestType,
@@ -20,6 +21,7 @@ type GithubFixture = {
   githubIssueService: GithubIssueService;
   githubSearchService: GithubSearchService;
   githubRepoService: GithubRepoService;
+  githubPullRequestService: GithubPullRequestService;
 };
 
 export const test: TestType<
@@ -71,6 +73,14 @@ export const test: TestType<
   githubRepoService: async ({ request, metricsCollector }, use) => {
     const githubRepoService = new GithubRepoService(request, metricsCollector);
     await use(githubRepoService);
+  },
+
+  githubPullRequestService: async ({ request, metricsCollector }, use) => {
+    const githubPullRequestService = new GithubPullRequestService(
+      request,
+      metricsCollector,
+    );
+    await use(githubPullRequestService);
   },
 });
 

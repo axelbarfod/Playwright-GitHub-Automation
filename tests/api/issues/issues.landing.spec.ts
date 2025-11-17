@@ -11,12 +11,22 @@ test.describe("Issues Landing", () => {
   test(`List Issues Assigned to ${process.env.GH_USER}`, async ({
     ajv,
     githubIssueService,
+    metricsCollector,
   }) => {
     const apiResponse: GitHubIssuesResponse =
       await githubIssueService.getIssues();
     expect(apiResponse.length).toBeGreaterThan(0);
     const validate = ajv.compile(schema);
+
+    const validationStart = performance.now();
     const isValid = validate(apiResponse);
+    const validationTime = performance.now() - validationStart;
+
+    metricsCollector.recordSchemaValidation(
+      "issues.json",
+      isValid,
+      validationTime,
+    );
 
     expect(
       isValid,
@@ -27,6 +37,7 @@ test.describe("Issues Landing", () => {
   test(`List repository issues assigned to ${process.env.GH_USER}`, async ({
     ajv,
     githubIssueService,
+    metricsCollector,
   }) => {
     const apiResponse: GitHubIssuesResponse =
       await githubIssueService.getIssues();
@@ -34,7 +45,17 @@ test.describe("Issues Landing", () => {
     expect(apiResponse.length).toBeGreaterThan(0);
     expect(apiResponse[0].user.login).toBe(`${process.env.GH_USER}`);
     const validate = ajv.compile(schema);
+
+    const validationStart = performance.now();
     const isValid = validate(apiResponse);
+    const validationTime = performance.now() - validationStart;
+
+    metricsCollector.recordSchemaValidation(
+      "issues.json",
+      isValid,
+      validationTime,
+    );
+
     expect(
       isValid,
       `Schema validation failed: ${JSON.stringify(validate.errors, null, 2)}`,

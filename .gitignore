@@ -28,3 +28,5 @@ trace/global-setup-trace.zip
 # Allure
 /allure-results/
 /allure-report/
+
+docs/

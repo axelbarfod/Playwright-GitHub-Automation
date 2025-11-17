@@ -4,7 +4,7 @@ import { GitHubSearchRepositoriesResponse } from "../../../model/search/Search";
 import { expect, test } from "../../../fixture/GithubFixture";
 
 test.describe("Search API Tests", () => {
-  test("Test Search", async ({ ajv, githubSearchService }) => {
+  test("Test Search", async ({ ajv, githubSearchService, metricsCollector }) => {
     const schema = StringUtils.readSchemaFile("searchRepositoriesSchema.json");
     const validate = ajv.compile(schema);
     const searchQuery = "playwright";
@@ -12,7 +12,15 @@ test.describe("Search API Tests", () => {
     const apiResponse: GitHubSearchRepositoriesResponse =
       await githubSearchService.searchRepositories(searchQuery);
 
+    const validationStart = performance.now();
     const isValid = validate(apiResponse);
+    const validationTime = performance.now() - validationStart;
+
+    metricsCollector.recordSchemaValidation(
+      "searchRepositoriesSchema.json",
+      isValid,
+      validationTime,
+    );
 
     if (!isValid) {
       logger.error(

@@ -12,6 +12,7 @@ test.describe(" Github Search API tests", () => {
   test("Get a repository from a specific user", async ({
     ajv,
     githubRepoService,
+    metricsCollector,
   }) => {
     logger.info(`Searching for user ${ghUser} and repo ${project}`);
     const schema = StringUtils.readSchemaFile("/repositories/repo-schema.json");
@@ -25,7 +26,15 @@ test.describe(" Github Search API tests", () => {
     expect(apiResponse.owner.login).toBe(`${ghUser}`);
     expect(apiResponse.full_name).toBe(fullName);
 
+    const validationStart = performance.now();
     const isValid = validate(apiResponse);
+    const validationTime = performance.now() - validationStart;
+
+    metricsCollector.recordSchemaValidation(
+      "repo-schema.json",
+      isValid,
+      validationTime,
+    );
 
     if (!isValid) {
       logger.log(
@@ -39,13 +48,23 @@ test.describe(" Github Search API tests", () => {
   test("List repositories for the authenticated user.", async ({
     ajv,
     githubRepoService,
+    metricsCollector,
   }) => {
     const schema = StringUtils.readSchemaFile("/repositories/user-repos.json");
     const validate = ajv.compile(schema);
     const repos: GitHubRepository[] = await githubRepoService.getRepositories();
 
     if (repos.length > 0) {
+      const validationStart = performance.now();
       const isValid = validate(repos);
+      const validationTime = performance.now() - validationStart;
+
+      metricsCollector.recordSchemaValidation(
+        "user-repos.json",
+        isValid,
+        validationTime,
+      );
+
       if (!isValid) {
         logger.log(
           "Validation errors in:",
@@ -61,6 +80,7 @@ test.describe(" Github Search API tests", () => {
   test("Create a new repository and then delete it.", async ({
     ajv,
     githubRepoService,
+    metricsCollector,
   }) => {
     const repoName = `test-repo-${Date.now()}`;
     logger.info(`Creating repository ${repoName}`);
@@ -75,7 +95,16 @@ test.describe(" Github Search API tests", () => {
       gitignore_template: "Node",
       license_template: "MIT",
     });
+
+    const validationStart = performance.now();
     const isValid = validate(data);
+    const validationTime = performance.now() - validationStart;
+
+    metricsCollector.recordSchemaValidation(
+      "repo-schema.json",
+      isValid,
+      validationTime,
+    );
 
     if (!isValid) {
       logger.log(
