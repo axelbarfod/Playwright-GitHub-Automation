@@ -16,4 +16,12 @@ export class GithubCopilotPage {
     await this.page.waitForLoadState("domcontentloaded");
     await this.getStartedForFreeButton.isVisible();
   }
+
+  async clickGetStartedForFree() {
+    await this.getStartedForFreeButton.click();
+  }
+
+  async clickSeePlansAndPricing() {
+    await this.plansButton.click();
+  }
 }
