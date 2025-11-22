@@ -51,10 +51,7 @@ test.describe("Repository View Tests @no-auth", () => {
     await expect(page).toHaveURL(/.*microsoft\/typescript\/pulls/i);
   });
 
-  test("View different repository", async ({
-    page,
-    githubRepositoryPage,
-  }) => {
+  test("View different repository", async ({ page, githubRepositoryPage }) => {
     // Navigate to a different repository
     await githubRepositoryPage.goToRepository("facebook", "react");
     await githubRepositoryPage.validatePageHasLoaded();

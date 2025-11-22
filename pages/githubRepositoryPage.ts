@@ -20,19 +20,32 @@ export class GithubRepositoryPage {
   constructor(page: Page) {
     this.page = page;
     this.repositoryName = page.locator('[itemprop="name"]').first();
-    this.repositoryDescription = page.locator('[itemprop="description"]').first();
-    this.readmeSection = page.locator('article').first();
+    this.repositoryDescription = page
+      .locator('[itemprop="description"]')
+      .first();
+    this.readmeSection = page.locator("article").first();
     this.filesList = page.locator('[aria-labelledby="files"]');
-    this.starButton = page.locator('button, a').filter({ hasText: /star/i }).first();
-    this.forkButton = page.locator('a').filter({ hasText: /fork/i }).first();
-    this.watchButton = page.locator('button').filter({ hasText: /watch/i }).first();
+    this.starButton = page
+      .locator("button, a")
+      .filter({ hasText: /star/i })
+      .first();
+    this.forkButton = page.locator("a").filter({ hasText: /fork/i }).first();
+    this.watchButton = page
+      .locator("button")
+      .filter({ hasText: /watch/i })
+      .first();
     this.codeButton = page.getByRole("button", { name: /code/i }).first();
     this.issuesTab = page.getByRole("link", { name: /issues/i }).first();
-    this.pullRequestsTab = page.getByRole("link", {
-      name: /pull requests/i,
-    }).first();
+    this.pullRequestsTab = page
+      .getByRole("link", {
+        name: /pull requests/i,
+      })
+      .first();
     this.actionsTab = page.getByRole("link", { name: /actions/i }).first();
-    this.aboutSection = page.locator('[data-pjax="#repo-content-pjax-container"]').locator("div.BorderGrid-cell").first();
+    this.aboutSection = page
+      .locator('[data-pjax="#repo-content-pjax-container"]')
+      .locator("div.BorderGrid-cell")
+      .first();
     this.starCount = page.locator("#repo-stars-counter-star");
     this.forkCount = page.locator("#repo-network-counter");
   }
