@@ -1,6 +1,8 @@
 import { GithubCopilotPage } from "../../pages/githubCopilotPage";
 import { GithubHomePage } from "../../pages/githubHomePage";
 import { GithubLoginPage } from "../../pages/githubLoginPage";
+import { GithubRepositoryPage } from "../../pages/githubRepositoryPage";
+import { GithubSearchPage } from "../../pages/githubSearchPage";
 import { test as base } from "@playwright/test";
 import { E2EMetricsCollector } from "../../service/metrics/E2EMetricsCollector";
 import { MetricsService } from "../../service/metrics/MetricsService";
@@ -10,6 +12,8 @@ type GithubUIFixture = {
   githubCopilotPage: GithubCopilotPage;
   githubHomePage: GithubHomePage;
   gitHubLoginPage: GithubLoginPage;
+  githubRepositoryPage: GithubRepositoryPage;
+  githubSearchPage: GithubSearchPage;
 };
 
 export const test = base.extend<GithubUIFixture>({
@@ -45,6 +49,16 @@ export const test = base.extend<GithubUIFixture>({
   gitHubLoginPage: async ({ page }, use) => {
     const gitHubLoginPage = new GithubLoginPage(page);
     await use(gitHubLoginPage);
+  },
+
+  githubRepositoryPage: async ({ page }, use) => {
+    const githubRepositoryPage = new GithubRepositoryPage(page);
+    await use(githubRepositoryPage);
+  },
+
+  githubSearchPage: async ({ page }, use) => {
+    const githubSearchPage = new GithubSearchPage(page);
+    await use(githubSearchPage);
   },
 });
 

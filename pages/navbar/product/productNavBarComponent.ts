@@ -92,4 +92,19 @@ export class ProductNavBarComponent {
     await this.openProductMenu();
     await this.discussionLink.click();
   }
+
+  async openAllFeaturesPage() {
+    await this.openProductMenu();
+    await this.allFeaturesLink.click();
+  }
+
+  async openDocumentationPage() {
+    await this.openProductMenu();
+    await this.documentationLink.click();
+  }
+
+  async openGithubSkillsPage() {
+    await this.openProductMenu();
+    await this.githubSkillLink.click();
+  }
 }
