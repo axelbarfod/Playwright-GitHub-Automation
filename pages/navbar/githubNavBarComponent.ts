@@ -41,4 +41,16 @@ export class GitHubNavBarComponent {
   async navigateToDiscussionsPage() {
     await this.productNavBarComponent.openDiscussionsPage();
   }
+
+  async navigateToAllFeaturesPage() {
+    await this.productNavBarComponent.openAllFeaturesPage();
+  }
+
+  async navigateToDocumentationPage() {
+    await this.productNavBarComponent.openDocumentationPage();
+  }
+
+  async navigateToGithubSkillsPage() {
+    await this.productNavBarComponent.openGithubSkillsPage();
+  }
 }

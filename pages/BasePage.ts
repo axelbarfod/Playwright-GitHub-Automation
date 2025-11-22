@@ -45,4 +45,16 @@ export class BasePage {
   async navigateToDiscussionsPage() {
     await this.gitHubNavBarComponent.navigateToDiscussionsPage();
   }
+
+  async navigateToAllFeaturesPage() {
+    await this.gitHubNavBarComponent.navigateToAllFeaturesPage();
+  }
+
+  async navigateToDocumentationPage() {
+    await this.gitHubNavBarComponent.navigateToDocumentationPage();
+  }
+
+  async navigateToGithubSkillsPage() {
+    await this.gitHubNavBarComponent.navigateToGithubSkillsPage();
+  }
 }

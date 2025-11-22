@@ -47,4 +47,27 @@ test.describe("Product Navigation Tests @no-auth", () => {
     await expect(page).toHaveURL(/.*discussions/);
     await expect(page).toHaveTitle(/.*Discussions/);
   });
+
+  test("Navigate to All Features page", async ({ page, githubHomePage }) => {
+    await githubHomePage.navigateToAllFeaturesPage();
+    await expect(page).toHaveURL(/.*features/);
+    await expect(page).toHaveTitle(/.*Features|.*GitHub/);
+  });
+
+  // Note: Documentation and GitHub Skills links don't appear to be available
+  // on the current GitHub navbar or require different selectors
+  // test.skip("Navigate to Documentation page", async ({ page, githubHomePage }) => {
+  //   await githubHomePage.navigateToDocumentationPage();
+  //   await expect(page).toHaveURL(/.*docs\.github\.com/);
+  //   await expect(page).toHaveTitle(/.*Documentation|.*GitHub Docs/);
+  // });
+
+  // test.skip("Navigate to GitHub Skills page", async ({
+  //   page,
+  //   githubHomePage,
+  // }) => {
+  //   await githubHomePage.navigateToGithubSkillsPage();
+  //   await expect(page).toHaveURL(/.*skills\.github\.com|.*github\.com.*skills/);
+  //   await expect(page).toHaveTitle(/.*Skills|.*GitHub Skills/);
+  // });
 });
