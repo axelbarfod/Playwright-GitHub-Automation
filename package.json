@@ -51,6 +51,6 @@
   "private": true,
   "dependencies": {
     "dotenv": "^17.2.3",
-    "winston": "^3.18.3"
+    "winston": "^3.19.0"
   }
 }
